@@ -1,0 +1,220 @@
+.verify {
+  position: absolute;
+  top: 132px;
+  bottom: 60px;
+  width: 100%;
+}
+.inner {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  width: 1886px;
+  height: 842px;
+}
+.left, .right {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+}
+.right {
+  right: 0;
+}
+.bg {
+  position: absolute;
+  top: 60px;
+  width: 574px;
+  height: 574px;
+}
+.left>.bg {
+  left: 142px;
+}
+.right>.bg {
+  right: 180px;
+}
+.bg_img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.finger {
+  position: absolute;
+  right: 116px;
+  bottom: -36px;
+  animation: fingermove 1s infinite;
+}
+@keyframes fingermove {
+  from {
+    bottom: -66px;
+  }
+  to {
+    bottom: -36px;
+  }
+}
+.fingerprint {
+  position: absolute;
+  right: 6px;
+  bottom: 166px;
+  width: 174px;
+  height: 180px;
+  overflow: hidden;
+  /* border-radius: 50%; */
+}
+.fingerprint_bg {
+  position: absolute;
+}
+.fingerprint_cover {
+  position: absolute;
+  width: 174px;
+  height: 174px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.fingerprint_default, .fingerprint_move_box {
+  position: absolute;
+  /* bottom: 34px; */
+  /* left: 42px; */
+}
+.fingerprint_move_box {
+  position: absolute;
+  bottom: 0;
+  width: 174px;
+  height: 174px;
+  overflow: hidden;
+  animation: fingerprintmove 2s infinite;
+}
+@keyframes fingerprintmove {
+  from {
+    height: 174px;
+  }
+  to {
+    height: 0px;
+  }
+}
+.fingerprint_move {
+  width: 174px;
+  height: 174px;
+  position: absolute;
+  bottom: 0;
+}
+.line {
+  width: 100%;
+  height: 32px;
+  position: absolute;
+  top: 0;
+  background-image: url(../assets/verify/scan_line.png);
+  /* background: linear-gradient(transparent,#65f279); */
+  animation: linemove 2s infinite;
+}
+@keyframes linemove {
+  from {
+    top: 0px;
+  }
+  to {
+    top: 174px;
+  }
+}
+.msg {
+  position: absolute;
+  bottom: 88px;
+  left: 316px;
+}
+.right>.msg {
+  left: 352px;
+}
+.time {
+  text-align: center;
+  color: #fff;
+}
+.timedown {
+  font-size: 54px;
+  margin: 0;
+}
+.timemsg {
+  font-size: 22px;
+  margin-top: 50px;
+}
+.face_msg {
+  font-size: 32px;
+  letter-spacing: 4px;
+  color:rgba(255, 255, 255, 0.46);
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  bottom: 112px;
+}
+/* 多div覆盖方案 */
+.face_img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 440px;
+  height: 508px;
+  /* background-color: #c09; */
+}
+.face_img_cover {
+  overflow: hidden;
+  width: 440px;
+  height: 508px;
+  /* visibility: hidden; */
+  transform: rotate(120deg);
+  /* background-color: #09c; */
+}
+.face_img_in1 {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-60deg);
+  /* background-color: #ccc; */
+}
+.face_img_in2 {
+  /* visibility: visible; */
+  width: 100%;
+  height: 100%;
+  transform: rotate(-60deg);
+  position: 50%;
+  /* background-color: #0c9; */
+}
+/* ---end--- */
+
+/* clip-path方案 */
+.face_img_polygon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 440px;
+  height: 510px;
+  background-color: #c09;
+  clip-path: polygon( 50% 0, 100% 25%, 100% 75%,50% 100%, 0% 75%, 0 25%);
+}
+/* ---end--- */
+
+
+.error_btn {
+  width: 240px;
+  height: 62px;
+}
+.error_btn:nth-of-type(2) {
+  margin-left: 110px; 
+  background-image: url(../assets/verify/verify_errorok_defult.png);
+}
+.error_btn:nth-of-type(2):active {
+  background-image: url(../assets/verify/verify_errorok_click.png);  
+} 
+.error_btn:last-of-type {
+  margin-right: 110px; 
+  background-image: url(../assets/verify/verify_errorcancel_default.png);  
+}
+.error_btn:last-of-type:active {
+  background-image: url(../assets/verify/verify_errorcancel_click.png);    
+} 
+
+.progress_box {
+  width: 1000px;
+  position: absolute;
+  bottom: 114px;
+  left: 50%;
+  transform: translateX(-50%);
+}

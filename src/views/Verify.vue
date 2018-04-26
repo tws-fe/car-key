@@ -1,0 +1,227 @@
+<template>
+  <div class="verify">
+    <div class="inner">
+      <div class="left">
+        <div class="bg">
+          <img class="bg_img" src="../assets/verify/verify_finger_bg.png" alt="">
+          <img class="finger" src="../assets/verify/verify_finger.png" alt="">
+          <div class="fingerprint">
+            <img class="fingerprint_bg" src="../assets/verify/verify_fingerprint_bg.png" alt="">
+            <div class="fingerprint_cover">
+              <img class="fingerprint_default" src="../assets/verify/verify_fingerprint_default1.png" alt="">
+              <div class="fingerprint_move_box">
+                <img class="fingerprint_move" src="../assets/verify/verify_fingerprint_move1.png" alt="">
+              </div>
+              <div class="line"></div>
+            </div>
+          </div>
+        </div>
+        <div class="msg">
+          <img src="../assets/verify/verify_finger_msg.png" alt="">
+        </div>
+      </div>
+      <div class="right">
+        <div class="bg">
+          <img class="bg_img"  src="../assets/verify/verify_face.png" alt="">
+          <p class="face_msg">请对准摄像头</p>
+          <!-- 六边形容器，暂时不用屏蔽 -->
+          <!-- 多div覆盖方案 -->
+          <!-- <div class="face_img">
+            <div class="face_img_cover">
+              <div class="face_img_in1">
+                <img class="face_img_in2" src="../assets/verify/verify_finger_bg.png" alt="">
+              </div>
+            </div>
+          </div> -->
+          <!-- clip-path方案 -->
+          <!-- <img class="face_img_polygon" src="../assets/verify/verify_finger_bg.png" alt=""> -->
+        </div>
+        <div class="msg">
+          <img src="../assets/verify/verify_face_msg.png" alt="">
+        </div>
+      </div>
+    </div>
+    <div class="time">
+      <p class="timedown">{{timedown}}</p>
+      <p class="timemsg">{{timedown}}秒后自动关闭此页面</p>
+    </div>
+    <div class="progress_box" v-if="preBorrowPercentage>=0&&preBorrowPercentage<100">
+      <el-progress  :text-inside="true" :stroke-width="28" :percentage="preBorrowPercentage"></el-progress>
+    </div>
+    <div class="progress_box" v-if="borrowingPercentage>=0&&borrowingPercentage<100">
+      <el-progress  :text-inside="true" :stroke-width="28" :percentage="borrowingPercentage"></el-progress>
+    </div>
+    <error-mask v-show="showMask" :msgs="msgs">
+      <div class="error_btn" @click="confirm"></div>
+      <div class="error_btn" @click="cancel"></div>
+    </error-mask>
+  </div>
+</template>
+
+<script>
+import Vue from 'vue'
+import { message, Progress } from 'element-ui'
+Vue.use(Progress)
+import ErrorMask from '../components/ErrorMask'
+// import { fingerprint, fingerprintCallback } from '../modules/FingerprintExtension'
+const fingerprint = window.twsdevice.fingerprint
+const keybox = window.twsdevice.keybox
+
+export default {
+  name: 'Verify',
+  data () {
+    return {
+      currentData: {}, //采集当前指纹的数据
+      DBCacheObj: {}, //创建指纹库的返回值
+      dbHandle: 0, //创建指纹库对应的句柄
+      timedown: 60,
+      timer: null,
+      preBorrowPercentage: -1, //盒子转动的进度
+      borrowingPercentage: -1, //打开盒子的进度
+      showMask: false,
+      msgs: ['指纹读头&nbsp;(&nbsp;人脸识别&nbsp;)&nbsp;读取不成功', '是否重新&nbsp;(&nbsp;识别&nbsp;)&nbsp;？']
+    }
+  },
+  created () {
+    // 流程step1: 启动指纹设备，监听回调
+    this.fingerprintHandler()
+    this.timer = setInterval(() => {
+      this.timedown--
+      if (this.timedown === 0) {
+        if (this.timer) {
+          clearInterval(this.timer)
+          this.timer = null
+        }
+        this.$router.push('home')
+      }
+    }, 1000)
+  },
+  mounted () {
+    document.querySelector('#app').style.backgroundImage = `url(${require('../assets/verify/verify_bg.jpg')})`
+  },
+  destroyed () {
+    document.querySelector('#app').style.backgroundImage = `url(${require('../assets/sy-bj.png')})`   
+    if (this.timer) {
+      clearInterval(this.timer)
+      this.timer = null
+    }
+
+    // 关闭指纹设备
+    fingerprint.close()
+  },
+  methods: {
+    cancel () {
+      this.$router.push('keylist')
+    },
+    confirm () {
+      this.timedown = 60
+      this.showMask = false
+    },
+    fingerprintCallback(state, data) {
+      if (state == 20) {
+        // message({
+        //   message: '采集到一枚指纹',
+        //   duration: 2000          
+        // })
+        this.currentData = data
+      }
+    },
+    fingerprintHandler () {
+      // 启动指纹设备
+      fingerprint.open(window, this.fingerprintCallback)
+      // 创建指纹库
+      this.DBCacheObj = fingerprint.DBCacheCreate()
+      // 指纹库句柄
+      this.dbHandle = this.DBCacheObj.dbHandle
+      // 遍历后台返回的指纹数据，添加到指纹库
+      this.$store.state.fingerInfo.forEach(item => {
+        // 获取指纹库记录数据
+        let icount = fingerprint.DBCacheCount(this.dbHandle)
+        fingerprint.DBCacheAdd(this.dbHandle, icount+1, item.fingerData.slice(3))
+      })
+    },
+    preBorrowHandler () {
+      // todo: 盒柜号和设备id需要从后台获取，暂时没有这个字段
+      let boxNum = '01'
+      let rfids = 'aabbccddeeff,aabbccddeeff'
+      // 借用钥匙的预处理，此指令会让转盘把指定的盒柜转到出口位置
+      keybox.preBorrow(boxNum, rfids, window, this.preBorrowCallback)
+    },
+    preBorrowCallback (state, data) {
+      if (state === -1) {
+        message.error('盒子正在执行其他操作，不能执行本次指令')
+      } else if (state === -100) {
+        message.error('盒子中钥匙不存在')
+      } else if (state === -200) {
+        message.error('盒子中的钥匙的rfid与预期不符')
+      } else if (state >= 0 && state <= 100) {
+        this.preBorrowPercentage = state
+      }
+    },
+  borrowingHandler () {
+    //立即打开出口的盒柜并领取钥匙，调用本方法前必须成功执行preBorrowKey
+    // todo: 盒柜号和设备id需要从后台获取，暂时没有这个字段
+    let boxNum = '01'
+    let rfids = 'aabbccddeeff,aabbccddeeff'
+     keybox.borrowing(boxNum, rfids, window, this.borrowingCallback)
+  },
+  borrowingCallback (state, data) {
+    if (state === -1) {
+      message.error('盒子正在执行其他操作，不能执行本次指令')
+    } else if (state === -2) {
+      message.error('盒子不在出口位置，不能执行')
+    } else if (state === -100) {
+      message.error('盒子中钥匙不存在')
+    } else if (state === -200) {
+      message.error('盒子中的钥匙的rfid与预期不符')
+    } else if (state >= 0 && state <= 100) {
+      this.borrowingPercentage = state
+    }
+  }
+  },
+  watch: {
+    currentData (val) {
+      console.log(JSON.parse(val).template)
+      // 根据指纹模板查询对应的指纹ID
+      let ret = fingerprint.DBCacheFindByTemplate(this.dbHandle, JSON.parse(val).template)
+      if (ret.status === 1) {
+        if (this.timer) {
+          clearInterval(this.timer)
+          this.timer = null
+        }
+        message({
+          message: '指纹匹配成功',
+          type: 'success',
+          duration: 2000
+        })
+        // 流程step2：匹配到指纹，开启盒子转动
+        this.preBorrowHandler()
+      } else {
+        message({
+          message: '指纹不匹配',
+          type: 'error'
+        })
+      }  
+    },
+    preBorrowPercentage (val) {
+      if (val === 100) {
+        // 流程step3: 盒子已转出，开启盒子打开
+        this.borrowingHandler()
+      }
+    },
+    borrowingPercentage (val) {
+      if (val === 100) {
+        // 流程step4: 盒子已打开，到取走钥匙界面
+        this.$router.push('takeAway')
+      }
+    }
+  },
+  components: {
+    ErrorMask
+  }
+}
+</script>
+
+<style scoped src="./Verify.css"></style>
+
+
