@@ -10,3 +10,5 @@ npm run serve
 # 打包部署
 npm run build
 ```
+
+#### 技术栈
