@@ -11,8 +11,72 @@
       <div v-if="msgIndex===2" class="suggest error_btn" @click="suggest"></div>
       <div v-if="msgIndex===3" class="tohome error_btn" @click="tohome"></div>
     </error-mask>
+    <div class="ScrollText">
+          <div class="ScrollText_main">
+                 <div style="text-align:right;font-size:24px;color:#fff">钥匙自动核实中</div>
+                 <div style="margin-top:42px">
+                   <span style="font-size:30px;margin-left:230px;color:#fff">正在进行扫描</span>
+                   <span style="font-size:24px;margin-left:178px;color:#fff">钥匙异常</span>
+                 </div>
+                 <div style="margin-top:58px">
+                   <span style="font-size:30px;margin-left:58px;color:#fff">钥匙损坏</span>
+                   <span style="font-size:30px;margin-left:248px;color:#fff">异物排查</span>
+                   <span style="font-size:30px;margin-left:320px;color:#fff">无物品</span>
+                </div>
+                 <div style="margin-top:84px">
+                    <span style="font-size:24px;margin-left:340px;color:#fff">钥匙自动核实</span>
+                    <span style="font-size:24px;margin-left:200px;color:#fff">钥匙是否放入</span>
+                 </div>
+          </div>
+    </div>
+    <div class="zhezao">
+  
+    </div>
   </div>
 </template>
+<style scoped>
+   .ScrollText{
+     position: relative;
+     width: 740px;
+     height: 500px;
+     overflow: hidden;
+     /*box-shadow:0 0 30px 10px rgba(255,255,255,.7) inset;*/
+     left: 620px;
+     top: 300px;
+     border-radius: 100px
+   }
+   .ScrollText_main{
+     position: absolute;
+     width:1400px;
+     height: 498px;
+     left: -1400px;
+     top: 0px;
+     color: white;
+     animation: 8s rowup linear infinite normal; 
+   }
+
+   @keyframes rowup {
+    0% {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+    100% {
+        -webkit-transform: translate3d(1400px, 0, 0);
+        transform: translate3d(1400px, 0, 0);
+    }
+}
+.zhezao{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: url(../assets/verify/zez.png)
+}
+.mask_base{
+  background-color: rgba(0,0,0,0) !important;
+}
+</style>
 
 <script>
 import { circlePoint, keyframes } from '../modules/circlePoint'
@@ -91,7 +155,7 @@ export default {
 .scan_box {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 55%;
   transform: translate(-50%, -50%);
   width: 492px;
   height: 502px;
