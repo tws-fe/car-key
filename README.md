@@ -12,3 +12,6 @@ npm run build
 ```
 
 #### 技术栈
++ MVVM库：vue + vue-router + vuex
++ UI库：element-ui
++ 第三方模块：axios，anime-js，swiper
