@@ -2,6 +2,9 @@ import fetch from './fetch.js'
 
 let host = 'http://rap2api.taobao.org/app/mock/11500/'
 // let host = '/car-web'
+if (process.env.VUE_APP_API === 'real') {
+  host = '/car-web'
+}
 
 let url = {
   sysparamInfo: '/sysparamInfo', //系统参数
@@ -10,7 +13,8 @@ let url = {
   borrowReason: '/borrowReason',  //借用理由
   fingerInfo: '/fingerInfo',  //指纹信息
   keyChipInfo :'/keyChipInfo', //钥匙芯片对应的数据
-  borrowAndReback: '/borrowAndReback' //借用和归还
+  borrowAndReback: '/borrowAndReback', //借用和归还
+  keyByChips: '/keyByChips' //根据芯片数组获取钥匙信息
 }
 
 Object.keys(url).forEach(key => {

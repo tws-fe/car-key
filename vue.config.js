@@ -1,6 +1,6 @@
 // const fs = require('fs')
 
-module.exports = {
+// module.exports = {
   // lintOnSave: true,
   // dll: true,
   // devServer: {
@@ -20,4 +20,4 @@ module.exports = {
   //   }
   // },
   // configureWebpack: {}
-}
+// }

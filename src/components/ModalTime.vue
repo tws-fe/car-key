@@ -4,15 +4,7 @@
       <div class="error_title">
         温馨提示
       </div>
-      <div class="error_msg">
-        <img v-if="!state" src="../assets/verify/verify_error_tip.png" alt="">
-        <img v-else src="../assets/back/verify_ok_tip.png" alt="">
-        <p v-for="(msg,index) in msgs" :key="index" v-html="msg"></p>
-      </div>
-      <div class="error_btn_box">
-        <div class="error_btn_line"></div>
-        <slot></slot>
-      </div>
+      <slot></slot>
     </div>
   </div>
 </template>
@@ -84,17 +76,35 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
 }
-.error_btn_gyfalid{
-  width: 342px;
-  height: 62px;
-  background: url(../assets/verify/AgainScan.png) no-repeat;
-  background-size: cover;
-  border-radius: 5px;
-  margin-left: 222px;
-  margin-top: 26px;
-  cursor: pointer;
-}
 
-
+>>> .el-progress-bar__outer{
+   background: #B5B8BF;
+   border-top: 1px solid #7F8289;
+ }
+>>> .el-progress-bar__inner{
+   background: url(../assets/verify/ProgressBar.png);
+ }
+>>> .el-progress-bar__outer{
+   overflow: initial;
+ }
+>>> .progress_box{
+   width:552px !important;
+   top:248px;
+ }
+>>> .el-progress-bar__innerText{
+   position: absolute;
+    top: -3vw;
+    left: 13vw;
+    font-size: 30px;
+    color: #0e1623;
+    font-weight: 600
+ }
+>>> .prompt_txt{
+   margin-top: 304px;
+   text-align: center;
+   font-size: 26px;
+   color: #1d2434;
+ }
 </style>
+
 

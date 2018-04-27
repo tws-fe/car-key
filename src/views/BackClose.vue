@@ -87,6 +87,7 @@
 
 </style>
 <script>
+import {mapState} from 'vuex'
 import { message } from 'element-ui'
 const keybox = window.twsdevice.keybox
 
@@ -99,6 +100,7 @@ export default {
       timer: null
     }
   },
+  computed: mapState(['reqData', 'rfids']),
   created () {
     this.returnedHandler()
     this.timer = setInterval(() => {
@@ -121,10 +123,7 @@ export default {
   methods: {
     returnedHandler () {
       //钥匙归还，关闭盒子
-      // todo: 盒柜号和设备id需要从后台获取，暂时没有这个字段
-      let boxNum = '01'
-      let rfids = 'aabbccddeeff,aabbccddeeff'
-      keybox.returned(boxNum, rfids, window, this.returnedCallback)
+      keybox.returned(this.reqData.boxNo, this.rfids, window, this.returnedCallback)
     },
     returnedCallback (state, data) {
       if (state === -1) {
@@ -138,20 +137,7 @@ export default {
       } else if (state >= 0 && state <= 100) {
         this.returnedPercentage = state
       } else if (state === 200) {
-        // todo：获取各参数
-        fetch(url.borrowAndReback, {
-          isStatus: 2,
-          keyId: '1523844972998100000',
-          carId: 1,
-          deviceId: '1523842068369100000',
-          boxNo: 12312,
-          userId: 19,
-          remark: '',
-          orgId: '440400100000',
-          orgCode: '440400100000', 
-          borrowReason: '',
-          bhours: 1
-          }).then(res => {
+        fetch(url.borrowAndReback, this.reqData).then(res => {
           this.$router.push('backSuccess')
         })
       }

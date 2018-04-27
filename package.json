@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --open",
-    "build": "vue-cli-service build"
+    "serve": "cross-env VUE_APP_API=mock vue-cli-service serve --open",
+    "serve-real": "cross-env VUE_APP_API=real vue-cli-service serve --open",
+    "build": "cross-env VUE_APP_API=real vue-cli-service build"
   },
   "dependencies": {
     "animejs": "^2.2.0",
@@ -21,6 +22,7 @@
     "@vue/cli-plugin-babel": "^3.0.0-beta.6",
     "@vue/cli-service": "^3.0.0-beta.6",
     "babel-plugin-component": "^1.1.0",
+    "cross-env": "^5.1.4",
     "cssnano": "^3.10.0",
     "cssnano-preset-advanced": "^4.0.0-rc.2",
     "node-sass": "^4.7.2",

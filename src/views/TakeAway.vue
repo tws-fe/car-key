@@ -74,6 +74,7 @@
 </style>
 
 <script>
+import {mapState, mapMutations} from 'vuex'
 import {url, fetch} from '../api'
 import {message} from 'element-ui'
 
@@ -87,7 +88,11 @@ export default {
       timer: null
     }
   },
+  computed: {
+    ...mapState(['reqData', 'rfids'])
+  },
   created () {
+    console.log(this.reqData)
     this.timer = setInterval(() => {
       this.timedown--
       if (this.timedown === 0) {
@@ -106,12 +111,10 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['setReqData']),
     borrowedHandler () {
       //领用完毕，立即关闭盒柜，调用本方法前必须成功执行borrowing
-      // todo: 盒柜号和设备id需要从后台获取，暂时没有这个字段
-      let boxNum = '01'
-      let rfids = 'aabbccddeeff,aabbccddeeff'
-      keybox.borrowed(boxNum, rfids, window, this.borrowedCallback)
+      keybox.borrowed(this.reqData.boxNo, this.rfids, window, this.borrowedCallback)
     },
     borrowedCallback (state, data) {
       if (state === -1) {
@@ -127,20 +130,7 @@ export default {
       } else if (state >= 0 && state <= 100) {
         this.borrowedPercentage = state
       } else if (state === 200) {
-        // todo：获取各参数
-        fetch(url.borrowAndReback, {
-          isStatus: 1,
-          keyId: '1523844972998100000',
-          carId: 1,
-          deviceId: '1523842068369100000',
-          boxNo: 12312,
-          userId: 19,
-          remark: '',
-          orgId: '440400100000',
-          orgCode: '440400100000', 
-          borrowReason: '',
-          bhours: 1
-          }).then(res => {
+        fetch(url.borrowAndReback, this.reqData).then(res => {
           this.$router.push('home')
         })
       }

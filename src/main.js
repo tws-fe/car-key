@@ -7,6 +7,7 @@ import {keybox, openCallback} from './modules/keyboxExtension'
 // 
 keybox.open(window, openCallback)
 
+
 //设备上调试
 // let VConsole = require('vconsole')
 // new VConsole()

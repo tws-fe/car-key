@@ -4,18 +4,39 @@
     <img class="key" src="../assets/back/back_key.png" alt="">
     <div class="timedown timedown_base">{{timedown}}秒</div>
     <div class="msg back_msg_base">请将钥匙放在感应区感应，等待柜门自动打开</div>
-    <div class="progress_box" v-if="preReturnPercentage>=0&&preReturnPercentage<100">
-      <el-progress  :text-inside="true" :stroke-width="28" :percentage="preReturnPercentage"></el-progress>
-    </div>
-    <div class="progress_box" v-if="returningPercentage>=0&&returningPercentage<100">
-      <el-progress  :text-inside="true" :stroke-width="28" :percentage="returningPercentage"></el-progress>
-    </div>
+
+    <modal-time v-if="preReturnPercentage>=0&&preReturnPercentage<100">
+      <div class="progress_box">
+        <el-progress  :text-inside="true" :stroke-width="28" :percentage="preReturnPercentage"></el-progress>
+      </div>
+      <div class="prompt_txt">
+       正在自动打开柜门，请稍候...
+      </div>   
+   </modal-time>
+
+    <modal-time v-if="returningPercentage>=0&&returningPercentage<100">
+      <div class="progress_box">
+        <el-progress  :text-inside="true" :stroke-width="28" :percentage="returningPercentage"></el-progress>
+      </div>
+      <div class="prompt_txt">
+       正在自动打开盒子，请稍候...
+      </div> 
+    </modal-time>
+
+    <error-mask v-show="showMask" :msgs="msgs">
+        <div class="error_btn_gyfalid" @click="reGo"></div>
+    </error-mask>
+
   </div>
 </template>
 
 <script>
+import {mapState, mapMutations} from 'vuex'
 import { message } from 'element-ui'
+import {url, fetch} from '../api' 
 const keybox = window.twsdevice.keybox
+import ErrorMask from '../components/ErrorMask'
+import ModalTime from '../components/ModalTime'
 
 export default {
   name: 'BackReact',
@@ -24,60 +45,94 @@ export default {
       preReturnPercentage: -1, //归还钥匙，盒子移动进度
       returningPercentage: -1, //规划钥匙，盒子的打开进度
       timedown: 30,
-      timer: null
+      timer: null,
+      showMask: false,
+      errorCount: 0,
+      msgs: ['钥匙感应（第一次）不成功', '二次失败将自动返回首页']
     }
   },
+  computed: mapState(['reqData', 'rfids']),
   created () {
-    this.readOutsideRfidHandler()
-    this.timer = setInterval(() => {
-      this.timedown--
-      if (this.timedown === 0) {
-        if (this.timer) {
-          clearInterval(this.timer)
-          this.timer = null
-        }
-        this.$router.push('home')
-      }
-    }, 1000)
+    // 如果是首页成功感应过来的，直接调用preReturnHandler
+    if (this.$route.query.isRead) {
+      this.preReturnHandler()
+    } else {
+      this.readOutsideRfidHandler()
+    }
+    this.timer = setInterval(this.goTime , 1000)
   },
   destroyed () {
-    if (this.timer) {
-      clearInterval(this.timer)
-      this.timer = null
-    }
+    this.clearTime()
   },
   methods: {
+    ...mapMutations(['setReqData', 'setRfids']),
+    clearTime () {
+      if (this.timer) {
+        clearInterval(this.timer)
+        this.timer = null
+      }
+    },
+    reGo () {
+      this.showMask = false
+      this.timedown = 30
+      this.timer = setInterval(this.goTime , 1000)
+    },
+    goTime () {
+      this.timedown--
+      if (this.timedown === 0) {
+        this.clearTime()
+        this.$router.push('home')
+      }
+    },
     readOutsideRfidHandler () {
       keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
     },
     readOutsideRfidCallback (state, data) {
-      let that = this
       if (state === -100) {
-        message.error('连接rfid失败')
+        this.errorCount++
+        if (this.errorCount === 2) {
+          this.clearTime()
+          this.$router.push('home')
+        }
+        // message.error('连接rfid失败')
+        this.showMask = true
+        this.clearTime()
       } 
       if (state === 100) {
-        if (this.timer) {
-          clearInterval(this.timer)
-          this.timer = null
-        }
+        this.clearTime()
         message({
           message: '读取到rfid信息',
           type: 'success',
-          duration: 2000,
-          onClose () {
-            that.preReturnHandler()
-          }
+          duration: 2000
         })
-        // todo：根据获取的data(一个rfid数组)去获取相关的boxNum和rfids
-        // 上面onClose中的preReturnHandler在异步回调后处理
+
+        // todo：rfids获取和赋值
+        let rfids = data.slice(1, data.length-1)
+        fetch(url.keyByChips, {
+          deviceId: this.reqData.deviceId,
+          chips: rfids
+        }).then(res => {
+          message.close()
+
+          let data = res.data.data
+          this.setReqData({
+            isStatus: 2,
+            keyId: data.id,
+            carId: data.carId,
+            boxNo: data.boxNo,
+            userId: '',
+            orgId: data.orgId,
+            orgCode: data.orgCode,
+            remark: data.remark
+          })
+
+          this.preReturnHandler()
+        })
       }
     },
     preReturnHandler () {
       //归还钥匙的预处理，此指令会让转盘把指定的盒柜转到出口位置
-      // todo: 盒柜号和设备id需要从后台获取，暂时没有这个字段
-      let boxNum = '01'
-      let rfids = 'aabbccddeeff,aabbccddeeff'
-      keybox.preReturn(boxNum, rfids, window, this.preReturnCallback)
+      keybox.preReturn(this.reqData.boxNo, this.rfids, window, this.preReturnCallback)
     },
     preReturnCallback (state, data) {
       if (state === -1) {
@@ -90,10 +145,7 @@ export default {
     },
     returningHandler () {
       //归还钥匙,打开出口的盒子
-      // todo: 盒柜号和设备id需要从后台获取，暂时没有这个字段
-      let boxNum = '01'
-      let rfids = 'aabbccddeeff,aabbccddeeff'
-      keybox.returning(boxNum, rfids, window, this.returningCallback)
+      keybox.returning(this.reqData.boxNo, this.rfids, window, this.returningCallback)
     },
     returningCallback (state, data) {
       if (state === -1) {
@@ -118,8 +170,13 @@ export default {
         this.$router.push('backClose')
       }
     }
+  },
+  components: {
+    ErrorMask,
+    ModalTime
   }
 }
+
 </script>
 
 <style scoped>

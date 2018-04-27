@@ -336,7 +336,7 @@
 </style>
 
 <script>
-// import {mapMutations} from 'vuex'
+import {mapMutations, mapState} from 'vuex'
 import {url,fetch} from '../api'
 import Vue from 'vue'
 import {Select, Option } from 'element-ui'
@@ -347,23 +347,36 @@ export default {
   // vue组件this实例化
   data() {
     return {
-       showhour:false,
-       showday:false,
-       hour:1,
-       day:0,
-       options:null,
-       value: ''
+      btnLoading: false,
+      showhour:false,
+      showday:false,
+      hour:1,
+      day:0,
+      options:null,
+      value: '' //借用理由
     }
   },
   computed: {
     imgUrl () {
       // 正常流程需要先选择车辆，这里是为了开发过程的友好处理
-      let selectCar = this.$store.state.selectCar
+      let selectCar = this.selectCar
       return selectCar ? selectCar.imageUrl : require('../assets/police_car.png')
-    }
+    },
+    ...mapState(['selectCar', 'reqData'])
   },
   created () { 
     this.getLists()
+
+    // 保存相应的信息
+    let selectCar = this.selectCar
+    this.setReqData({
+      isStatus: 1,
+      carId: selectCar.id,
+      orgId: selectCar.orgId,
+      orgCode: selectCar.orgCode,
+      remark: this.value,
+      bhours: this.hour + this.day*24
+    })
   },
   mounted () {
     // this.setAppBgi('../assets/txsybg.jpg')
@@ -373,7 +386,7 @@ export default {
     document.querySelector('#app').style.backgroundImage = `url(${require('../assets/sy-bj.png')})`   
   },
   methods: {
-    // ...mapMutations(['setAppBgi']),
+    ...mapMutations(['setAppBgi','setReqData', 'setRfids']),
     getLists () {
       fetch(url.borrowReason).then(res => {
         this.options = res.data.data
@@ -424,8 +437,36 @@ export default {
        }
     },
     toVerify () {
-      // 如果没有填写借用时间，直接return
-      this.$router.push('verify')
+      // 函数节流处理，按钮最好有loading状态
+      if (this.btnLoading) return
+      this.btnLoading = true
+
+      let reqData = this.reqData
+      fetch(url.keyChipInfo, {
+        orgId: reqData.orgId,
+        carId: reqData.carId
+      }).then(res => {
+        this.btnLoading = false
+
+        let lists = res.data.data
+        let data = lists[0]
+        this.setReqData({
+          deviceId: data.deviceId,
+          keyId: data.keyId,
+          boxNo: data.boxNo
+        })
+
+        // rfids拼接处理
+        let rfids = []
+        lists.forEach(item => {
+          rfids.push(item.chipId)
+        })
+        this.setRfids(rfids.join(','))
+
+        this.$router.push('verify')
+      }).catch(error => {
+        this.btnLoading = false
+      })
     }
   }
 }

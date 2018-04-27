@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <Nav />
-    <router-view/>
+    <!-- <transition name="slide-fade"> -->
+      <router-view/>
+    <!-- </transition> -->
     <Foot />
     <DemoNav />
   </div>
@@ -67,5 +69,18 @@ html::-webkit-scrollbar{
   height: 100%;
   background: rgba(0, 0, 0, 0.3);
   z-index: 10;
+}
+
+.slide-fade-enter{
+  transform: translateX(100%);
+}
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-to {
+  transform: translateX(-100%);
 }
 </style>

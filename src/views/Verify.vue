@@ -45,24 +45,36 @@
       <p class="timedown">{{timedown}}</p>
       <p class="timemsg">{{timedown}}秒后自动关闭此页面</p>
     </div>
-    <div class="progress_box" v-if="preBorrowPercentage>=0&&preBorrowPercentage<100">
+  <modal-time v-if="preBorrowPercentage>=0&&preBorrowPercentage<100">
+    <div class="progress_box">
       <el-progress  :text-inside="true" :stroke-width="28" :percentage="preBorrowPercentage"></el-progress>
     </div>
-    <div class="progress_box" v-if="borrowingPercentage>=0&&borrowingPercentage<100">
+    <div class="prompt_txt">
+       正在自动打开柜门，请稍候...
+    </div>
+ </modal-time> 
+  <modal-time v-if="borrowingPercentage>=0&&borrowingPercentage<100">
+    <div class="progress_box">
       <el-progress  :text-inside="true" :stroke-width="28" :percentage="borrowingPercentage"></el-progress>
     </div>
-    <error-mask v-show="showMask" :msgs="msgs">
+    <div class="prompt_txt">
+       正在自动打开盒子，请稍候...
+    </div>
+ </modal-time> 
+
+<!--    <error-mask v-show="showMask" :msgs="msgs">
       <div class="error_btn" @click="confirm"></div>
       <div class="error_btn" @click="cancel"></div>
-    </error-mask>
+    </error-mask> -->
   </div>
 </template>
-
 <script>
+import {mapMutations, mapState} from 'vuex'
 import Vue from 'vue'
 import { message, Progress } from 'element-ui'
 Vue.use(Progress)
 import ErrorMask from '../components/ErrorMask'
+import ModalTime from '../components/ModalTime'
 // import { fingerprint, fingerprintCallback } from '../modules/FingerprintExtension'
 const fingerprint = window.twsdevice.fingerprint
 const keybox = window.twsdevice.keybox
@@ -78,10 +90,11 @@ export default {
       timer: null,
       preBorrowPercentage: -1, //盒子转动的进度
       borrowingPercentage: -1, //打开盒子的进度
-      showMask: false,
+      showMask: true,
       msgs: ['指纹读头&nbsp;(&nbsp;人脸识别&nbsp;)&nbsp;读取不成功', '是否重新&nbsp;(&nbsp;识别&nbsp;)&nbsp;？']
     }
   },
+  computed: mapState(['fingerInfo', 'rfids', 'reqData']),
   created () {
     // 流程step1: 启动指纹设备，监听回调
     this.fingerprintHandler()
@@ -110,6 +123,7 @@ export default {
     fingerprint.close()
   },
   methods: {
+    ...mapMutations(['selectCar']),
     cancel () {
       this.$router.push('keylist')
     },
@@ -134,18 +148,15 @@ export default {
       // 指纹库句柄
       this.dbHandle = this.DBCacheObj.dbHandle
       // 遍历后台返回的指纹数据，添加到指纹库
-      this.$store.state.fingerInfo.forEach(item => {
+      this.fingerInfo.forEach(item => {
         // 获取指纹库记录数据
         let icount = fingerprint.DBCacheCount(this.dbHandle)
         fingerprint.DBCacheAdd(this.dbHandle, icount+1, item.fingerData.slice(3))
       })
     },
     preBorrowHandler () {
-      // todo: 盒柜号和设备id需要从后台获取，暂时没有这个字段
-      let boxNum = '01'
-      let rfids = 'aabbccddeeff,aabbccddeeff'
       // 借用钥匙的预处理，此指令会让转盘把指定的盒柜转到出口位置
-      keybox.preBorrow(boxNum, rfids, window, this.preBorrowCallback)
+      keybox.preBorrow(this.reqData.boxNo, this.rfids, window, this.preBorrowCallback)
     },
     preBorrowCallback (state, data) {
       if (state === -1) {
@@ -158,33 +169,33 @@ export default {
         this.preBorrowPercentage = state
       }
     },
-  borrowingHandler () {
-    //立即打开出口的盒柜并领取钥匙，调用本方法前必须成功执行preBorrowKey
-    // todo: 盒柜号和设备id需要从后台获取，暂时没有这个字段
-    let boxNum = '01'
-    let rfids = 'aabbccddeeff,aabbccddeeff'
-     keybox.borrowing(boxNum, rfids, window, this.borrowingCallback)
-  },
-  borrowingCallback (state, data) {
-    if (state === -1) {
-      message.error('盒子正在执行其他操作，不能执行本次指令')
-    } else if (state === -2) {
-      message.error('盒子不在出口位置，不能执行')
-    } else if (state === -100) {
-      message.error('盒子中钥匙不存在')
-    } else if (state === -200) {
-      message.error('盒子中的钥匙的rfid与预期不符')
-    } else if (state >= 0 && state <= 100) {
-      this.borrowingPercentage = state
+    borrowingHandler () {
+      //立即打开出口的盒柜并领取钥匙，调用本方法前必须成功执行preBorrowKey
+      keybox.borrowing(this.reqData.boxNo, this.rfids, window, this.borrowingCallback)
+    },
+    borrowingCallback (state, data) {
+      if (state === -1) {
+        message.error('盒子正在执行其他操作，不能执行本次指令')
+      } else if (state === -2) {
+        message.error('盒子不在出口位置，不能执行')
+      } else if (state === -100) {
+        message.error('盒子中钥匙不存在')
+      } else if (state === -200) {
+        message.error('盒子中的钥匙的rfid与预期不符')
+      } else if (state >= 0 && state <= 100) {
+        this.borrowingPercentage = state
+      }
     }
-  }
   },
   watch: {
     currentData (val) {
-      console.log(JSON.parse(val).template)
       // 根据指纹模板查询对应的指纹ID
       let ret = fingerprint.DBCacheFindByTemplate(this.dbHandle, JSON.parse(val).template)
       if (ret.status === 1) {
+        // 设置用户id
+        this.selectCar({
+          userId: this.fingerInfo[ret.fid-1].id
+        })
         if (this.timer) {
           clearInterval(this.timer)
           this.timer = null
@@ -217,7 +228,8 @@ export default {
     }
   },
   components: {
-    ErrorMask
+    ErrorMask,
+    ModalTime
   }
 }
 </script>

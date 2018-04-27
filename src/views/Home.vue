@@ -23,9 +23,45 @@
 
 <script>
 import anime from 'animejs'
+import {url, fetch} from '../api'
+import {mapState, mapMutations} from 'vuex'
+const keybox = window.twsdevice.keybox
+
 export default {
   name: 'home',
+  computed: mapState(['reqData']),
+  created () {
+    keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
+  },
   methods: {
+    ...mapMutations(['setReqData']),
+    readOutsideRfidCallback (state, data) {
+      if (state === -100) {
+
+      } 
+      if (state === 100) {
+
+        // todo：rfids获取和赋值
+        let rfids = data.slice(1, data.length-1)
+        fetch(url.keyByChips, {
+          deviceId: this.reqData.deviceId,
+          chips: rfids
+        }).then(res => {
+          let data = res.data.data
+          this.setReqData({
+            isStatus: 2,
+            keyId: data.id,
+            carId: data.carId,
+            boxNo: data.boxNo,
+            userId: '',
+            orgId: data.orgId,
+            orgCode: data.orgCode,
+            remark: data.remark
+          })
+          this.$router.push({name: 'backReact', query:{isRead: true}})
+        })
+      }
+    },
     handler (ref) {
       let el = this.$refs[ref]
       anime({

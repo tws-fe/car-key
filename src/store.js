@@ -9,14 +9,36 @@ export default new Vuex.Store({
   state: {
     selectCar: null,
     imgHost: '',
+    // 派出所的信息
     departData: {
       departId: '',
       departName: ''
     },
+    // 服务器返回的指纹数据
     fingerInfo: [],
+    // 借用和归还的请求数据
+    reqData: {
+      isStatus: '',
+      keyId: '',
+      carId: '',
+      deviceId: '',
+      boxNo: '01',
+      userId: '',
+      orgId: '',
+      orgCode: '',
+      remark: '',
+      bhours: ''
+    },
+    rfids: 'aabbccddeeff',
     appBgi: './assets/sy-bj.png'
   },
   mutations: {
+    setRfids (state, data) {
+      state.rfids = data
+    },
+    setReqData (state, data) {
+      state.reqData = Object.assign({}, state.reqData, data)
+    },
     setFingerInfo (state, arr) {
       state.fingerInfo = arr.filter(item => {
         return item.orgId === state.departData.departId
@@ -46,7 +68,11 @@ export default new Vuex.Store({
     },
     initDepartData ({commit, state}) {
       fetch(url.orgInfo).then(res => {
-        commit('setDepartData', res.data.data[0])
+        let departData = res.data.data[0]
+        commit('setDepartData', departData)
+        commit('setReqData', {
+          deviceId: departData.deviceId
+        })
         fetch(url.fingerInfo, {
           orgId: state.departData.departId
         }).then(res => {
