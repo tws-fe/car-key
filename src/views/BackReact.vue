@@ -106,7 +106,6 @@ export default {
           duration: 2000
         })
 
-        // todo：rfids获取和赋值
         let rfids = data.slice(1, data.length-1)
         fetch(url.keyByChips, {
           deviceId: this.reqData.deviceId,
@@ -125,6 +124,10 @@ export default {
             orgCode: data.orgCode,
             remark: data.remark
           })
+
+          this.setRfids(data.keyChips.map(item => {
+            return item.chipId
+          }).join(','))
 
           this.preReturnHandler()
         })

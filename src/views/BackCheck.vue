@@ -57,12 +57,10 @@
 
    @keyframes rowup {
     0% {
-        -webkit-transform: translate3d(0, 0, 0);
-        transform: translate3d(0, 0, 0);
+        transform: translateX(0);
     }
     100% {
-        -webkit-transform: translate3d(1400px, 0, 0);
-        transform: translate3d(1400px, 0, 0);
+        transform: translateX(1400px);
     }
 }
 .zhezao{

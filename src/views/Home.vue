@@ -29,19 +29,18 @@ const keybox = window.twsdevice.keybox
 
 export default {
   name: 'home',
-  computed: mapState(['reqData']),
+  computed: mapState(['reqData', 'rfids']),
   created () {
     keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
   },
   methods: {
-    ...mapMutations(['setReqData']),
+    ...mapMutations(['setReqData', 'setRfids']),
     readOutsideRfidCallback (state, data) {
       if (state === -100) {
 
       } 
       if (state === 100) {
 
-        // todo：rfids获取和赋值
         let rfids = data.slice(1, data.length-1)
         fetch(url.keyByChips, {
           deviceId: this.reqData.deviceId,
@@ -58,6 +57,11 @@ export default {
             orgCode: data.orgCode,
             remark: data.remark
           })
+
+          this.setRfids(data.keyChips.map(item => {
+            return item.chipId
+          }).join(','))
+                    
           this.$router.push({name: 'backReact', query:{isRead: true}})
         })
       }

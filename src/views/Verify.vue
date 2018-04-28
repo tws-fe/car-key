@@ -113,10 +113,12 @@ export default {
     }, 1000)
   },
   mounted () {
-    document.querySelector('#app').style.backgroundImage = `url(${require('../assets/verify/verify_bg.jpg')})`
+    this.setAppBgi('/static/verify_bg.jpg')
+    // document.querySelector('#app').style.backgroundImage = `url(${require('../assets/verify/verify_bg.jpg')})`
   },
   destroyed () {
-    document.querySelector('#app').style.backgroundImage = `url(${require('../assets/sy-bj.png')})`   
+    this.setAppBgi('/static/sy-bj.png')
+    // document.querySelector('#app').style.backgroundImage = `url(${require('../assets/sy-bj.png')})`   
     if (this.timer) {
       clearInterval(this.timer)
       this.timer = null
@@ -126,7 +128,7 @@ export default {
     fingerprint.close()
   },
   methods: {
-    ...mapMutations(['selectCar']),
+    ...mapMutations(['selectCar', 'setAppBgi']),
     cancel () {
       this.$router.push('keylist')
     },
