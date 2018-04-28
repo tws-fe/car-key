@@ -379,11 +379,12 @@ export default {
     })
   },
   mounted () {
-    // this.setAppBgi('../assets/txsybg.jpg')
-    document.querySelector('#app').style.backgroundImage = `url(${require('../assets/txsybg.jpg')})`
+    this.setAppBgi('/static/txsybg.jpg')
+    // document.querySelector('#app').style.backgroundImage = `url(${require('../assets/txsybg.jpg')})`
   },
   destroyed () {
-    document.querySelector('#app').style.backgroundImage = `url(${require('../assets/sy-bj.png')})`   
+    this.setAppBgi('/static/sy-bj.png')    
+    // document.querySelector('#app').style.backgroundImage = `url(${require('../assets/sy-bj.png')})`   
   },
   methods: {
     ...mapMutations(['setAppBgi','setReqData', 'setRfids']),

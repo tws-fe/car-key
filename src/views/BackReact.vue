@@ -128,7 +128,6 @@ export default {
           this.setRfids(data.keyChips.map(item => {
             return item.chipId
           }).join(','))
-          console.log(this.rfids)
 
           this.preReturnHandler()
         })

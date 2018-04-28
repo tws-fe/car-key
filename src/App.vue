@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :style="{'background-image': `url(${appBgi})`}">
     <Nav />
     <!-- <transition name="slide-fade"> -->
       <router-view/>
@@ -13,8 +13,9 @@
 import DemoNav from './components/DemoNav'
 import Foot from './components/Foot'
 import Nav from './components/Nav'
-import {mapActions} from 'vuex'
+import {mapActions, mapState} from 'vuex'
 export default {
+  computed: mapState(['appBgi']),
   created() {
     this.initSysInfo()
     this.initDepartData()
@@ -38,7 +39,7 @@ html::-webkit-scrollbar{
 #app {
   width: 100%;
   height: 100%;
-  background-image: url('./assets/sy-bj.png');
+  /* background-image: url('./assets/sy-bj.png'); */
   background-size: cover;
 }
 .timedown_base {

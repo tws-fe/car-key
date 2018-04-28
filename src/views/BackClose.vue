@@ -49,34 +49,31 @@
   @keyframes downmove {   
     from {    
       top: 240px;
+      /* transform: translateY(240px); */
       opacity: 0;
     }
     to {
       top: 290px;
+      /* transform: translateY(290px); */
       opacity: 1;
     }  
    
 }
 
-@keyframes keymove{
-    from {    
-      top: -300px;
-      opacity: 0;
-    }
-    to {
-      top: -100px;
-      opacity: 1;
-    } 
+@keyframes keymove{  
   0%{
     top: -300px;
+    /* transform: translateY(-300px); */
     opacity: 0;
   }
   60%{
     top: -300px;
+    /* transform: translateY(-300px); */
     opacity:0;
   }
   100%{
     top: -100px;
+    /* transform: translateY(-100px); */
     opacity: 1;
   } 
  

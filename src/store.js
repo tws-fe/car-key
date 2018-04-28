@@ -22,15 +22,15 @@ export default new Vuex.Store({
       keyId: '',
       carId: '',
       deviceId: '',
-      boxNo: '01',
+      boxNo: '',
       userId: '',
       orgId: '',
       orgCode: '',
       remark: '',
       bhours: ''
     },
-    rfids: 'aabbccddeeff',
-    appBgi: './assets/sy-bj.png'
+    rfids: '',
+    appBgi: '/static/sy-bj.png'
   },
   mutations: {
     setRfids (state, data) {
