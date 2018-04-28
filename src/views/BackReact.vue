@@ -6,9 +6,9 @@
     <div class="msg back_msg_base">请将钥匙放在感应区感应，等待柜门自动打开</div>
 
     <modal-time v-if="preReturnPercentage>=0&&preReturnPercentage<100">
-      <div class="progress_box">
+      <!-- <div class="progress_box">
         <el-progress  :text-inside="true" :stroke-width="28" :percentage="preReturnPercentage"></el-progress>
-      </div>
+      </div> -->
       <div class="prompt_txt">
        正在自动打开柜门，请稍候...
       </div>   

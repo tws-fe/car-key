@@ -92,7 +92,6 @@ export default {
     ...mapState(['reqData', 'rfids'])
   },
   created () {
-    console.log(this.reqData)
     this.timer = setInterval(() => {
       this.timedown--
       if (this.timedown === 0) {

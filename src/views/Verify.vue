@@ -47,8 +47,8 @@
     </div>
   <modal-time v-if="preBorrowPercentage>=0&&preBorrowPercentage<100">
      <div class="BorrowMan">
-          <span>借用人：徐某某</span>
-          <span>车牌号:京D301Y2</span>
+          <span>借用人:{{selectCar.borrowUser}}</span>
+          <span>车牌号:{{selectCar.no}}</span>
      </div>
      <div class="ProgressBar">
          <img src="../assets/verify/ProgressBar.gif">
@@ -90,7 +90,7 @@ export default {
       dbHandle: 0, //创建指纹库对应的句柄
       timedown: 60,
       timer: null,
-      preBorrowPercentage: 1, //盒子转动的进度
+      preBorrowPercentage: -1, //盒子转动的进度
       borrowingPercentage: -1, //打开盒子的进度
       showMask: true,
       msgs: ['指纹读头&nbsp;(&nbsp;人脸识别&nbsp;)&nbsp;读取不成功', '是否重新&nbsp;(&nbsp;识别&nbsp;)&nbsp;？']
@@ -98,7 +98,6 @@ export default {
   },
   computed: mapState(['fingerInfo', 'rfids', 'reqData', 'selectCar']),
   created () {
-    console.log(this.selectCar)
     // 流程step1: 启动指纹设备，监听回调
     this.fingerprintHandler()
     this.timer = setInterval(() => {
@@ -128,7 +127,7 @@ export default {
     fingerprint.close()
   },
   methods: {
-    ...mapMutations(['selectCar', 'setAppBgi']),
+    ...mapMutations(['setAppBgi', 'setReqData']),
     cancel () {
       this.$router.push('keylist')
     },
@@ -137,7 +136,11 @@ export default {
       this.showMask = false
     },
     fingerprintCallback(state, data) {
-      if (state == 20) {
+      if (state == 10) {
+        console.log('设备打开成功');
+      }else if(state == 11){
+        console.log('设备已打开，无需重复的打开');
+      }else if (state == 20) {
         // message({
         //   message: '采集到一枚指纹',
         //   duration: 2000          
@@ -164,6 +167,7 @@ export default {
       keybox.preBorrow(this.reqData.boxNo, this.rfids, window, this.preBorrowCallback)
     },
     preBorrowCallback (state, data) {
+      let that = this
       if (state === -1) {
         message.error('盒子正在执行其他操作，不能执行本次指令')
       } else if (state === -100) {
@@ -196,9 +200,12 @@ export default {
     currentData (val) {
       // 根据指纹模板查询对应的指纹ID
       let ret = fingerprint.DBCacheFindByTemplate(this.dbHandle, JSON.parse(val).template)
+      // let ret = {
+      //   status: 1
+      // }
       if (ret.status === 1) {
         // 设置用户id
-        this.selectCar({
+        this.setReqData({
           userId: this.fingerInfo[ret.fid-1].id
         })
         if (this.timer) {

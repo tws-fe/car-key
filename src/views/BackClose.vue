@@ -132,8 +132,15 @@ export default {
       } else if (state === -400) {
         message.error('盒子中有未知的rfid卡片')
       } else if (state >= 0 && state <= 100) {
+        if (this.timer) {
+          clearInterval(this.timer)
+          this.timer = null
+        }
         this.returnedPercentage = state
+      } else if (state > 100 && state < 200) {
+        // 检测弹框
       } else if (state === 200) {
+        // 检测弹框关闭
         fetch(url.borrowAndReback, this.reqData).then(res => {
           this.$router.push('backSuccess')
         })
