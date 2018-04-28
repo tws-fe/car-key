@@ -46,17 +46,19 @@
       <p class="timemsg">{{timedown}}秒后自动关闭此页面</p>
     </div>
   <modal-time v-if="preBorrowPercentage>=0&&preBorrowPercentage<100">
-    <div class="progress_box">
-      <el-progress  :text-inside="true" :stroke-width="28" :percentage="preBorrowPercentage"></el-progress>
-    </div>
+     <div class="BorrowMan">
+          <span>借用人：徐某某</span>
+          <span>车牌号:京D301Y2</span>
+     </div>
+     <div class="ProgressBar">
+         <img src="../assets/verify/ProgressBar.gif">
+     </div>
     <div class="prompt_txt">
        正在自动打开柜门，请稍候...
     </div>
  </modal-time> 
   <modal-time v-if="borrowingPercentage>=0&&borrowingPercentage<100">
-    <div class="progress_box">
-      <el-progress  :text-inside="true" :stroke-width="28" :percentage="borrowingPercentage"></el-progress>
-    </div>
+    
     <div class="prompt_txt">
        正在自动打开盒子，请稍候...
     </div>
@@ -88,14 +90,15 @@ export default {
       dbHandle: 0, //创建指纹库对应的句柄
       timedown: 60,
       timer: null,
-      preBorrowPercentage: -1, //盒子转动的进度
+      preBorrowPercentage: 1, //盒子转动的进度
       borrowingPercentage: -1, //打开盒子的进度
       showMask: true,
       msgs: ['指纹读头&nbsp;(&nbsp;人脸识别&nbsp;)&nbsp;读取不成功', '是否重新&nbsp;(&nbsp;识别&nbsp;)&nbsp;？']
     }
   },
-  computed: mapState(['fingerInfo', 'rfids', 'reqData']),
+  computed: mapState(['fingerInfo', 'rfids', 'reqData', 'selectCar']),
   created () {
+    console.log(this.selectCar)
     // 流程step1: 启动指纹设备，监听回调
     this.fingerprintHandler()
     this.timer = setInterval(() => {

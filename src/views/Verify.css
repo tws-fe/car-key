@@ -211,10 +211,3 @@
   background-image: url(../assets/verify/verify_errorcancel_click.png);    
 } 
 
-.progress_box {
-  width: 1000px;
-  position: absolute;
-  bottom: 114px;
-  left: 50%;
-  transform: translateX(-50%);
-}

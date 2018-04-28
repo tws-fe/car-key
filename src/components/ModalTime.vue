@@ -76,35 +76,33 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
 }
-
->>> .el-progress-bar__outer{
-   background: #B5B8BF;
-   border-top: 1px solid #7F8289;
- }
->>> .el-progress-bar__inner{
-   background: url(../assets/verify/ProgressBar.png);
- }
->>> .el-progress-bar__outer{
-   overflow: initial;
- }
->>> .progress_box{
-   width:552px !important;
-   top:248px;
- }
->>> .el-progress-bar__innerText{
-   position: absolute;
-    top: -3vw;
-    left: 13vw;
-    font-size: 30px;
-    color: #0e1623;
-    font-weight: 600
- }
 >>> .prompt_txt{
-   margin-top: 304px;
+   margin-top: 81px;
    text-align: center;
    font-size: 26px;
-   color: #1d2434;
+   color: #0C151E;
  }
+ 
+>>> .ProgressBar{
+  width: 100%;
+  text-align: center;
+  margin-top: 26px;
+}
+>>> .ProgressBar img{
+  width: 550px;
+  height: 32px;
+}
+>>> .BorrowMan{
+  width: 550px;
+  margin-left: 120px;
+  font-size: 30px;
+  margin-top: 126px;
+  color: #1f262f
+}
+>>> .BorrowMan span:last-child
+{ 
+ margin-left: 52px;
+}
 </style>
 
 
