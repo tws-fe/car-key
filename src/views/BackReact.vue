@@ -27,10 +27,12 @@
         <div class="error_btn_gyfalid" @click="reGo"></div>
     </error-mask>
 
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
+import bus from '../modules/bus'
 import {mapState, mapMutations} from 'vuex'
 import { message } from 'element-ui'
 import {url, fetch} from '../api' 
@@ -81,7 +83,7 @@ export default {
       this.timedown--
       if (this.timedown === 0) {
         this.clearTime()
-        this.$router.push('home')
+        this.$router.push('/')
       }
     },
     readOutsideRfidHandler () {
@@ -92,7 +94,7 @@ export default {
         this.errorCount++
         if (this.errorCount === 2) {
           this.clearTime()
-          this.$router.push('home')
+          this.$router.push('/')
         }
         // message.error('连接rfid失败')
         this.showMask = true
@@ -143,6 +145,7 @@ export default {
       } else if (state === -100) {
         message.error('盒子中有钥匙，不能归还')
       } else if (state >= 0 && state <= 100) {
+        console.log('preReturn-state: ', state)
         this.preReturnPercentage = state
       }
     },
@@ -159,8 +162,9 @@ export default {
         message.error('盒子中有钥匙，不能归还')
       } else if (state >= 0 && state <= 100) {
         this.returningPercentage = state
+        console.log('returning-state: ', state)
       } else if (state === 200) { //检测到钥匙已放入
-        this.$router.push('backClose')
+        bus.$emit('returningState', state)
       }
     }
   },
@@ -172,7 +176,11 @@ export default {
     },
     returningPercentage (val) {
       if (val === 100) {
-        // this.$router.push('backClose')
+        if (this.timer) {
+          clearInterval(this.timer)
+          this.timer = null
+        }
+        this.$router.push('/backReact/backClose')
       }
     }
   },

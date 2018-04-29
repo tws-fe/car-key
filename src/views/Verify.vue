@@ -113,7 +113,7 @@ export default {
           clearInterval(this.timer)
           this.timer = null
         }
-        this.$router.push('home')
+        this.$router.push('index')
       }
     }, 1000)
   },
@@ -243,6 +243,11 @@ export default {
     borrowingPercentage (val) {
       if (val === 100) {
         // 流程step4: 盒子已打开，到取走钥匙界面
+        // 2018.04.29  把takeAway修改为子路由了，到子路由时需要把定时器关掉
+        if (this.timer) {
+          clearInterval(this.timer)
+          this.timer = null
+        }
         this.$router.push('/verify/takeAway')
       }
     }

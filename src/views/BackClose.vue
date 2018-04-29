@@ -1,4 +1,5 @@
 <template>
+<div class="main_key_container">
   <div class="main_key">
     <img class="down" src="../assets/key/arrow.png">
       <div class="cupBoard">
@@ -10,14 +11,22 @@
       <div class="timedown timedown_base">{{timedown}}秒</div>
       <div class="msg back_msg_base">请把钥匙放到盒内关闭柜门</div>
   </div>
+</div>
 </template>
 <style>
+.main_key_container {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 11;
+  top: 0;
+  left: 0;
+  background-image: url(/static/sy-bj.png);
+  background-size: cover; 
+}
   .main_key{
      width: 100%;
      height: 100%;
-     position: fixed;
-     top: 0;
-     left: 0;
      background: url(../assets/key/bg02.png) no-repeat;
      background-size: cover;
   }
@@ -84,6 +93,7 @@
 
 </style>
 <script>
+import bus from '../modules/bus'
 import {mapState} from 'vuex'
 import { message } from 'element-ui'
 const keybox = window.twsdevice.keybox
@@ -107,9 +117,19 @@ export default {
           clearInterval(this.timer)
           this.timer = null
         }
-        // this.$router.push('home')
+        this.$router.push('/home')
       }
     }, 1000)
+
+     bus.$on('returningState', (state) => {
+      if (state === 200) {
+        if (this.timer) {
+          clearInterval(this.timer)
+          this.timer = null
+        }
+      }
+    })
+
   },
   destroyed () {
     if (this.timer) {
@@ -142,7 +162,7 @@ export default {
       } else if (state === 200) {
         // 检测弹框关闭
         fetch(url.borrowAndReback, this.reqData).then(res => {
-          this.$router.push('backSuccess')
+          this.$router.push('/backSuccess')
         })
       }
     }

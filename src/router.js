@@ -50,15 +50,17 @@ export default new Router({
       component: BackReact,
       meta: {
         title: '首页 > 归还钥匙 > 钥匙感应'
-      }
-    },
-    {
-      path: '/backClose',
-      name: 'backClose',
-      component: BackClose,
-      meta: {
-        title: '首页 > 归还钥匙 > 钥匙放入柜中'
-      }
+      },
+      children: [
+        {
+          path: 'backClose',
+          name: 'backClose',
+          component: BackClose,
+          meta: {
+            title: '首页 > 归还钥匙 > 钥匙放入柜中'
+          }
+        }
+      ]
     },
     {
       path: '/backCheck',
