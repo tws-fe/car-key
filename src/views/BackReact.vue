@@ -159,6 +159,8 @@ export default {
         message.error('盒子中有钥匙，不能归还')
       } else if (state >= 0 && state <= 100) {
         this.returningPercentage = state
+      } else if (state === 200) { //检测到钥匙已放入
+        this.$router.push('backClose')
       }
     }
   },
@@ -170,7 +172,7 @@ export default {
     },
     returningPercentage (val) {
       if (val === 100) {
-        this.$router.push('backClose')
+        // this.$router.push('backClose')
       }
     }
   },

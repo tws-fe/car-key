@@ -90,15 +90,17 @@ export default new Router({
       component: Verify,
       meta: {
         title: '首页 > 申请钥匙 > 填写事由 > 身份验证'
-      }
-    },
-    {
-      path: '/takeAway',
-      name: 'takeAway',
-      component: TakeAway,
-      meta: {
-        title: '首页 > 申请钥匙 > 填写事由 > 身份验证 > 取走钥匙'
-      }
-    }  
+      },
+      children: [
+        {
+          path: 'takeAway',
+          name: 'takeAway',
+          component: TakeAway,
+          meta: {
+            title: '首页 > 申请钥匙 > 填写事由 > 身份验证 > 取走钥匙'
+          }
+        }
+      ]
+    }   
   ]
 })

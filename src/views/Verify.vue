@@ -45,36 +45,42 @@
       <p class="timedown">{{timedown}}</p>
       <p class="timemsg">{{timedown}}秒后自动关闭此页面</p>
     </div>
-  <modal-time v-if="preBorrowPercentage>=0&&preBorrowPercentage<100">
-     <div class="BorrowMan">
-          <span>借用人:{{selectCar.borrowUser}}</span>
-          <span>车牌号:{{selectCar.no}}</span>
-     </div>
-     <div class="ProgressBar">
-         <img src="../assets/verify/ProgressBar.gif">
-     </div>
-    <div class="prompt_txt">
-       正在自动打开柜门，请稍候...
-    </div>
- </modal-time> 
-  <modal-time v-if="borrowingPercentage>=0&&borrowingPercentage<100">
-    
-    <div class="prompt_txt">
-       正在自动打开盒子，请稍候...
-    </div>
- </modal-time> 
+    <modal-time v-if="preBorrowPercentage>=0&&preBorrowPercentage<100">
+      <div class="BorrowMan">
+            <span>借用人:&nbsp;{{selectCar.borrowUser}}</span>
+            <span>车牌号:&nbsp;{{selectCar.no}}</span>
+      </div>
+      <div class="ProgressBar">
+          <img src="../assets/verify/ProgressBar.gif">
+      </div>
+      <div class="prompt_txt">
+        正在自动打开柜门，请稍候...
+      </div>
+    </modal-time> 
+    <modal-time v-if="borrowingPercentage>=0&&borrowingPercentage<100">
+      
+      <div class="prompt_txt">
+        正在自动打开盒子，请稍候...
+      </div>
+    </modal-time> 
 
 <!--    <error-mask v-show="showMask" :msgs="msgs">
       <div class="error_btn" @click="confirm"></div>
       <div class="error_btn" @click="cancel"></div>
     </error-mask> -->
+
+    <router-view></router-view>
   </div>
 </template>
+
+
 <script>
+import bus from '../modules/bus'
 import {mapMutations, mapState} from 'vuex'
 import Vue from 'vue'
 import { message, Progress } from 'element-ui'
 Vue.use(Progress)
+import TakeAway from './TakeAway'
 import ErrorMask from '../components/ErrorMask'
 import ModalTime from '../components/ModalTime'
 // import { fingerprint, fingerprintCallback } from '../modules/FingerprintExtension'
@@ -193,6 +199,8 @@ export default {
         message.error('盒子中的钥匙的rfid与预期不符')
       } else if (state >= 0 && state <= 100) {
         this.borrowingPercentage = state
+      } else if (state === 200) { //钥匙已拿走(即没有检测到标签)
+        bus.$emit('borrowingState', state)
       }
     }
   },
@@ -235,7 +243,7 @@ export default {
     borrowingPercentage (val) {
       if (val === 100) {
         // 流程step4: 盒子已打开，到取走钥匙界面
-        this.$router.push('takeAway')
+        this.$router.push('/verify/takeAway')
       }
     }
   },
