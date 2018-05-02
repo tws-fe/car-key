@@ -172,6 +172,7 @@ export default {
       })
     },
     preBorrowHandler () {
+      console.log('keybox.preBorrow')
       // 借用钥匙的预处理，此指令会让转盘把指定的盒柜转到出口位置
       keybox.preBorrow(this.reqData.boxNo, this.rfids, window, this.preBorrowCallback)
     },
