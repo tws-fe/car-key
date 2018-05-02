@@ -57,8 +57,7 @@
         正在自动打开柜门，请稍候...
       </div>
     </modal-time> 
-    <modal-time v-if="borrowingPercentage>=0&&borrowingPercentage<100">
-      
+    <modal-time v-if="borrowingPercentage>=0&&borrowingPercentage<100"> 
       <div class="prompt_txt">
         正在自动打开盒子，请稍候...
       </div>
