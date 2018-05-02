@@ -137,6 +137,7 @@ export default {
       keybox.borrowed(this.reqData.boxNo, this.rfids, window, this.borrowedCallback)
     },
     borrowedCallback (state, data) {
+      console.log('关闭盒子')
       if (state === -1) {
         message.error('盒子正在执行其他操作，不能执行本次指令')
       } else if (state === -100) {
@@ -149,7 +150,7 @@ export default {
         message.error('盒子中有未知的rfid卡片')
       } else if (state === 100) {
         this.borrowedPercentage = parseInt(data)
-        console.log(state)
+        console.log('盒子关闭进度：', data)
       } else if (state === 200) {
         fetch(url.borrowAndReback, this.reqData).then(res => {
           this.$router.push({name: 'index'})

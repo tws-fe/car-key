@@ -142,6 +142,7 @@ export default {
       this.showMask = false
     },
     fingerprintCallback(state, data) {
+      console.log('启动指纹设备')
       if (state == 10) {
         console.log('设备打开成功');
       }else if(state == 11){
@@ -151,6 +152,7 @@ export default {
         //   message: '采集到一枚指纹',
         //   duration: 2000          
         // })
+        console.log('采集到一枚指纹')
         this.currentData = data
       }
     },
@@ -173,6 +175,7 @@ export default {
       keybox.preBorrow(this.reqData.boxNo, this.rfids, window, this.preBorrowCallback)
     },
     preBorrowCallback (state, data) {
+      console.log('借用钥匙的预处理')
       let that = this
       if (state === -1) {
         message.error('盒子正在执行其他操作，不能执行本次指令')
@@ -181,6 +184,7 @@ export default {
       } else if (state === -200) {
         message.error('盒子中的钥匙的rfid与预期不符')
       } else if (state === 100) {
+        console.log('盒子转出进度：', data)
         this.preBorrowPercentage = parseInt(data)
       }
     },
@@ -189,6 +193,7 @@ export default {
       keybox.borrowing(this.reqData.boxNo, this.rfids, window, this.borrowingCallback)
     },
     borrowingCallback (state, data) {
+      console.log('打开盒柜')
       if (state === -1) {
         message.error('盒子正在执行其他操作，不能执行本次指令')
       } else if (state === -2) {
@@ -198,6 +203,7 @@ export default {
       } else if (state === -200) {
         message.error('盒子中的钥匙的rfid与预期不符')
       } else if (state === 100) {
+        console.log('盒柜打开进度: ', data)
         this.borrowingPercentage = parseInt(data)
       } else if (state === 200) { //钥匙已拿走(即没有检测到标签)
         bus.$emit('borrowingState', state)
