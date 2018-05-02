@@ -94,6 +94,7 @@
 </style>
 <script>
 import bus from '../modules/bus'
+import {url, fetch} from '../api'
 import {mapState} from 'vuex'
 import { message } from 'element-ui'
 const keybox = window.twsdevice.keybox
@@ -151,12 +152,12 @@ export default {
         message.error('盒子中有钥匙，但rfid不符合预期')
       } else if (state === -400) {
         message.error('盒子中有未知的rfid卡片')
-      } else if (state >= 0 && state <= 100) {
+      } else if (state === 100) {
         if (this.timer) {
           clearInterval(this.timer)
           this.timer = null
         }
-        this.returnedPercentage = state
+        this.returnedPercentage = parseInt(data)
       } else if (state > 100 && state < 200) {
         // 检测弹框
       } else if (state === 200) {

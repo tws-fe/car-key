@@ -180,8 +180,8 @@ export default {
         message.error('盒子中钥匙不存在')
       } else if (state === -200) {
         message.error('盒子中的钥匙的rfid与预期不符')
-      } else if (state >= 0 && state <= 100) {
-        this.preBorrowPercentage = state
+      } else if (state === 100) {
+        this.preBorrowPercentage = parseInt(data)
       }
     },
     borrowingHandler () {
@@ -197,8 +197,8 @@ export default {
         message.error('盒子中钥匙不存在')
       } else if (state === -200) {
         message.error('盒子中的钥匙的rfid与预期不符')
-      } else if (state >= 0 && state <= 100) {
-        this.borrowingPercentage = state
+      } else if (state === 100) {
+        this.borrowingPercentage = parseInt(data)
       } else if (state === 200) { //钥匙已拿走(即没有检测到标签)
         bus.$emit('borrowingState', state)
       }

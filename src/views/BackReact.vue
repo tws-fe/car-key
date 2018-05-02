@@ -144,9 +144,9 @@ export default {
         message.error('盒子正在执行其他操作，不能执行本次指令')
       } else if (state === -100) {
         message.error('盒子中有钥匙，不能归还')
-      } else if (state >= 0 && state <= 100) {
+      } else if (state === 100) {
         console.log('preReturn-state: ', state)
-        this.preReturnPercentage = state
+        this.preReturnPercentage = parseInt(data)
       }
     },
     returningHandler () {
@@ -160,8 +160,8 @@ export default {
         message.error('盒子不在出口位置，不能执行')
       } else if (state === -100) {
         message.error('盒子中有钥匙，不能归还')
-      } else if (state >= 0 && state <= 100) {
-        this.returningPercentage = state
+      } else if (state === 100) {
+        this.returningPercentage = parseInt(data)
         console.log('returning-state: ', state)
       } else if (state === 200) { //检测到钥匙已放入
         bus.$emit('returningState', state)

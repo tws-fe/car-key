@@ -147,8 +147,8 @@ export default {
         message.error('盒子中有钥匙，但盒子中的钥匙的rfid与预期不符')
       } else if (state === -400) {
         message.error('盒子中有未知的rfid卡片')
-      } else if (state >= 0 && state <= 100) {
-        this.borrowedPercentage = state
+      } else if (state === 100) {
+        this.borrowedPercentage = parseInt(data)
         console.log(state)
       } else if (state === 200) {
         fetch(url.borrowAndReback, this.reqData).then(res => {
