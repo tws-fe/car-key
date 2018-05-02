@@ -105,14 +105,18 @@ export default {
       preBorrowPercentage: -1, //盒子转动的进度
       borrowingPercentage: -1, //打开盒子的进度
       showMask: true,
+      borrowUser:null,//借用人
+      CarNumber:null,//车牌号
       msgs: ['指纹读头&nbsp;(&nbsp;人脸识别&nbsp;)&nbsp;读取不成功', '是否重新&nbsp;(&nbsp;识别&nbsp;)&nbsp;？']
     }
   },
   computed: mapState(['fingerInfo', 'rfids', 'reqData', 'selectCar']),
   created () {
-    this.preBorrowHandler()
+    this.borrowUser = this.selectCar.borrowUser
+    this.CarNumber = this.selectCar.no
     // 流程step1: 启动指纹设备，监听回调
-    // this.fingerprintHandler()
+    // this.preBorrowHandler()
+    this.fingerprintHandler()
     this.timer = setInterval(() => {
       this.timedown--
       if (this.timedown === 0) {

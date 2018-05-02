@@ -110,24 +110,28 @@ export default {
   },
   computed: mapState(['reqData', 'rfids']),
   created () {
-    this.returnedHandler()
-    this.timer = setInterval(() => {
-      this.timedown--
-      if (this.timedown === 0) {
-        if (this.timer) {
-          clearInterval(this.timer)
-          this.timer = null
-        }
-        this.$router.push('/home')
-      }
-    }, 1000)
+    
+    // this.timer = setInterval(() => {
+    //   this.timedown--
+    //   if (this.timedown === 0) {
+    //     if (this.timer) {
+    //       clearInterval(this.timer)
+    //       this.timer = null
+    //     }
+    //     this.$router.push('/home')
+    //   }
+    // }, 1000)
 
      bus.$on('returningState', (state) => {
+       console.log('监听returningState：', state)
       if (state === 200) {
         if (this.timer) {
           clearInterval(this.timer)
           this.timer = null
         }
+        setTimeout(() => {
+          this.returnedHandler()
+        }, 1000)
       }
     })
 
@@ -140,8 +144,11 @@ export default {
   },
   methods: {
     returnedHandler () {
+      console.log('调用keybox.returned')
       //钥匙归还，关闭盒子
-      keybox.returned(this.reqData.boxNo, this.rfids, window, this.returnedCallback)
+      keybox.returned('01', 'E280110C20007096677408DF', window, this.returnedCallback)
+      
+      // keybox.returned(this.reqData.boxNo, this.rfids, window, this.returnedCallback)
     },
     returnedCallback (state, data) {
       if (state === -1) {
@@ -153,6 +160,7 @@ export default {
       } else if (state === -400) {
         message.error('盒子中有未知的rfid卡片')
       } else if (state === 100) {
+        console.log('returned: ', data)
         if (this.timer) {
           clearInterval(this.timer)
           this.timer = null
@@ -161,6 +169,7 @@ export default {
       } else if (state > 100 && state < 200) {
         // 检测弹框
       } else if (state === 200) {
+        console.log('钥匙归还成功')
         // 检测弹框关闭
         fetch(url.borrowAndReback, this.reqData).then(res => {
           this.$router.push('/backSuccess')

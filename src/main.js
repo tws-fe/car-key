@@ -3,9 +3,9 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import './mixins'
-import {keybox, openCallback} from './modules/keyboxExtension'
-// 
-keybox.open(window, openCallback)
+// import {keybox, openCallback} from './modules/keyboxExtension'
+// // 
+// keybox.open(window, openCallback)
 
 
 //设备上调试
