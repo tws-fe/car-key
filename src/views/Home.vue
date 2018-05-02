@@ -33,6 +33,9 @@ export default {
   created () {
     keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
   },
+  destroyed () {
+    keybox.readOutsideRfidData(null, null)
+  },
   methods: {
     ...mapMutations(['setReqData', 'setRfids']),
     readOutsideRfidCallback (state, data) {

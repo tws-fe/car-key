@@ -110,9 +110,9 @@ export default {
   },
   computed: mapState(['fingerInfo', 'rfids', 'reqData', 'selectCar']),
   created () {
-     keybox.readOutsideRfidData(null, null)
+    this.preBorrowHandler()
     // 流程step1: 启动指纹设备，监听回调
-    this.fingerprintHandler()
+    // this.fingerprintHandler()
     this.timer = setInterval(() => {
       this.timedown--
       if (this.timedown === 0) {
@@ -120,7 +120,7 @@ export default {
           clearInterval(this.timer)
           this.timer = null
         }
-        this.$router.push('index')
+        this.$router.push('home')
       }
     }, 1000)
   },
@@ -178,7 +178,7 @@ export default {
       })
     },
     preBorrowHandler () {
-      console.log('keybox.preBorrow')
+      console.log('keybox.preBorrow',this.reqData.boxNo, this.rfids)
       // 借用钥匙的预处理，此指令会让转盘把指定的盒柜转到出口位置
       keybox.preBorrow(this.reqData.boxNo, this.rfids, window, this.preBorrowCallback)
     },
