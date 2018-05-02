@@ -47,8 +47,8 @@
     </div>
   <modal-time v-if="preBorrowPercentage>=0&&preBorrowPercentage<100">
      <div class="BorrowMan">
-          <span>借用人：徐某某</span>
-          <span>车牌号:京D301Y2</span>
+          <span>借用人：{{borrowUser}}</span>
+          <span>车牌号:{{CarNumber}}</span>
      </div>
      <div class="ProgressBar">
          <img src="../assets/verify/ProgressBar.gif">
@@ -58,7 +58,13 @@
     </div>
  </modal-time> 
   <modal-time v-if="borrowingPercentage>=0&&borrowingPercentage<100">
-    
+    <div class="BorrowMan">
+          <span>借用人：{{borrowUser}}</span>
+          <span>车牌号:{{CarNumber}}</span>
+     </div>
+     <div class="ProgressBar">
+         <img src="../assets/verify/ProgressBar.gif">
+     </div>
     <div class="prompt_txt">
        正在自动打开盒子，请稍候...
     </div>
@@ -73,8 +79,8 @@
 <script>
 import {mapMutations, mapState} from 'vuex'
 import Vue from 'vue'
-import { message, Progress } from 'element-ui'
-Vue.use(Progress)
+/*import { message, Progress } from 'element-ui'
+Vue.use(Progress)*/
 import ErrorMask from '../components/ErrorMask'
 import ModalTime from '../components/ModalTime'
 // import { fingerprint, fingerprintCallback } from '../modules/FingerprintExtension'
@@ -90,15 +96,19 @@ export default {
       dbHandle: 0, //创建指纹库对应的句柄
       timedown: 60,
       timer: null,
-      preBorrowPercentage: 1, //盒子转动的进度
-      borrowingPercentage: -1, //打开盒子的进度
+      preBorrowPercentage: 10, //盒子转动的进度
+      borrowingPercentage: 1, //打开盒子的进度
       showMask: true,
+      borrowUser:null,//借用人
+      CarNumber:null,//车牌号
       msgs: ['指纹读头&nbsp;(&nbsp;人脸识别&nbsp;)&nbsp;读取不成功', '是否重新&nbsp;(&nbsp;识别&nbsp;)&nbsp;？']
     }
   },
   computed: mapState(['fingerInfo', 'rfids', 'reqData', 'selectCar']),
   created () {
-    console.log(this.selectCar)
+    this.borrowUser = this.selectCar.borrowUser
+    this.CarNumber = this.selectCar.no
+    console.log(11)
     // 流程step1: 启动指纹设备，监听回调
     this.fingerprintHandler()
     this.timer = setInterval(() => {

@@ -6,18 +6,26 @@
     <div class="msg back_msg_base">请将钥匙放在感应区感应，等待柜门自动打开</div>
 
     <modal-time v-if="preReturnPercentage>=0&&preReturnPercentage<100">
-      <div class="progress_box">
-        <el-progress  :text-inside="true" :stroke-width="28" :percentage="preReturnPercentage"></el-progress>
-      </div>
+     <div class="BorrowMan">
+          <span>借用人：{{borrowUser}}</span>
+          <span>车牌号:{{CarNumber}}</span>
+     </div>
+     <div class="ProgressBar">
+         <img src="../assets/verify/ProgressBar.gif">
+     </div>
       <div class="prompt_txt">
        正在自动打开柜门，请稍候...
       </div>   
    </modal-time>
 
     <modal-time v-if="returningPercentage>=0&&returningPercentage<100">
-      <div class="progress_box">
-        <el-progress  :text-inside="true" :stroke-width="28" :percentage="returningPercentage"></el-progress>
-      </div>
+      <div class="BorrowMan">
+          <span>借用人：{{borrowUser}}</span>
+          <span>车牌号:{{CarNumber}}</span>
+     </div>
+     <div class="ProgressBar">
+         <img src="../assets/verify/ProgressBar.gif">
+     </div>
       <div class="prompt_txt">
        正在自动打开盒子，请稍候...
       </div> 
@@ -48,11 +56,15 @@ export default {
       timer: null,
       showMask: false,
       errorCount: 0,
+      borrowUser:null,//借用人
+      CarNumber:null,//车牌号
       msgs: ['钥匙感应（第一次）不成功', '二次失败将自动返回首页']
     }
   },
-  computed: mapState(['reqData', 'rfids']),
+  computed: mapState(['reqData', 'rfids','selectCar']),
   created () {
+    this.borrowUser = this.selectCar.borrowUser
+    this.CarNumber = this.selectCar.no
     // 如果是首页成功感应过来的，直接调用preReturnHandler
     if (this.$route.query.isRead) {
       this.preReturnHandler()
