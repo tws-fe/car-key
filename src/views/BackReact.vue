@@ -6,6 +6,7 @@
     <div class="msg back_msg_base">请将钥匙放在感应区感应，等待柜门自动打开</div>
 
     <modal-time v-if="preReturnPercentage>=0&&preReturnPercentage<100">
+<<<<<<< HEAD
      <div class="BorrowMan">
           <span>借用人：{{borrowUser}}</span>
           <span>车牌号:{{CarNumber}}</span>
@@ -13,6 +14,11 @@
      <div class="ProgressBar">
          <img src="../assets/verify/ProgressBar.gif">
      </div>
+=======
+      <!-- <div class="progress_box">
+        <el-progress  :text-inside="true" :stroke-width="28" :percentage="preReturnPercentage"></el-progress>
+      </div> -->
+>>>>>>> 8246c77df017a676d85c858967c4fb40919fb8bd
       <div class="prompt_txt">
        正在自动打开柜门，请稍候...
       </div>   
@@ -35,10 +41,12 @@
         <div class="error_btn_gyfalid" @click="reGo"></div>
     </error-mask>
 
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
+import bus from '../modules/bus'
 import {mapState, mapMutations} from 'vuex'
 import { message } from 'element-ui'
 import {url, fetch} from '../api' 
@@ -93,7 +101,7 @@ export default {
       this.timedown--
       if (this.timedown === 0) {
         this.clearTime()
-        this.$router.push('home')
+        this.$router.push('/')
       }
     },
     readOutsideRfidHandler () {
@@ -104,7 +112,7 @@ export default {
         this.errorCount++
         if (this.errorCount === 2) {
           this.clearTime()
-          this.$router.push('home')
+          this.$router.push('/')
         }
         // message.error('连接rfid失败')
         this.showMask = true
@@ -154,8 +162,9 @@ export default {
         message.error('盒子正在执行其他操作，不能执行本次指令')
       } else if (state === -100) {
         message.error('盒子中有钥匙，不能归还')
-      } else if (state >= 0 && state <= 100) {
-        this.preReturnPercentage = state
+      } else if (state === 100) {
+        console.log('preReturn-state: ', state)
+        this.preReturnPercentage = parseInt(data)
       }
     },
     returningHandler () {
@@ -169,8 +178,11 @@ export default {
         message.error('盒子不在出口位置，不能执行')
       } else if (state === -100) {
         message.error('盒子中有钥匙，不能归还')
-      } else if (state >= 0 && state <= 100) {
-        this.returningPercentage = state
+      } else if (state === 100) {
+        this.returningPercentage = parseInt(data)
+        console.log('returning-state: ', state)
+      } else if (state === 200) { //检测到钥匙已放入
+        bus.$emit('returningState', state)
       }
     }
   },
@@ -182,7 +194,11 @@ export default {
     },
     returningPercentage (val) {
       if (val === 100) {
-        this.$router.push('backClose')
+        if (this.timer) {
+          clearInterval(this.timer)
+          this.timer = null
+        }
+        this.$router.push('/backReact/backClose')
       }
     }
   },

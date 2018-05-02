@@ -45,6 +45,7 @@
       <p class="timedown">{{timedown}}</p>
       <p class="timemsg">{{timedown}}秒后自动关闭此页面</p>
     </div>
+<<<<<<< HEAD
   <modal-time v-if="preBorrowPercentage>=0&&preBorrowPercentage<100">
      <div class="BorrowMan">
           <span>借用人：{{borrowUser}}</span>
@@ -69,18 +70,55 @@
        正在自动打开盒子，请稍候...
     </div>
  </modal-time> 
+=======
+    <modal-time v-if="preBorrowPercentage>=0&&preBorrowPercentage<100">
+      <div class="BorrowMan">
+            <span>借用人:&nbsp;{{selectCar.borrowUser}}</span>
+            <span>车牌号:&nbsp;{{selectCar.no}}</span>
+      </div>
+      <div class="ProgressBar">
+          <img src="../assets/verify/ProgressBar.gif">
+      </div>
+      <div class="prompt_txt">
+        正在自动打开柜门，请稍候...
+      </div>
+    </modal-time> 
+    <modal-time v-if="borrowingPercentage>=0&&borrowingPercentage<100">
+       <div class="BorrowMan">
+            <span>借用人:&nbsp;{{selectCar.borrowUser}}</span>
+            <span>车牌号:&nbsp;{{selectCar.no}}</span>
+      </div>
+      <div class="ProgressBar">
+          <img src="../assets/verify/ProgressBar.gif">
+      </div> 
+      <div class="prompt_txt">
+        正在自动打开盒子，请稍候...
+      </div>
+    </modal-time> 
+>>>>>>> 8246c77df017a676d85c858967c4fb40919fb8bd
 
 <!--    <error-mask v-show="showMask" :msgs="msgs">
       <div class="error_btn" @click="confirm"></div>
       <div class="error_btn" @click="cancel"></div>
     </error-mask> -->
+
+    <router-view></router-view>
   </div>
 </template>
+
+
 <script>
+import bus from '../modules/bus'
 import {mapMutations, mapState} from 'vuex'
 import Vue from 'vue'
+<<<<<<< HEAD
 /*import { message, Progress } from 'element-ui'
 Vue.use(Progress)*/
+=======
+import { message, Progress } from 'element-ui'
+Vue.use(Progress)
+import TakeAway from './TakeAway'
+>>>>>>> 8246c77df017a676d85c858967c4fb40919fb8bd
 import ErrorMask from '../components/ErrorMask'
 import ModalTime from '../components/ModalTime'
 // import { fingerprint, fingerprintCallback } from '../modules/FingerprintExtension'
@@ -96,8 +134,13 @@ export default {
       dbHandle: 0, //创建指纹库对应的句柄
       timedown: 60,
       timer: null,
+<<<<<<< HEAD
       preBorrowPercentage: 10, //盒子转动的进度
       borrowingPercentage: 1, //打开盒子的进度
+=======
+      preBorrowPercentage: -1, //盒子转动的进度
+      borrowingPercentage: -1, //打开盒子的进度
+>>>>>>> 8246c77df017a676d85c858967c4fb40919fb8bd
       showMask: true,
       borrowUser:null,//借用人
       CarNumber:null,//车牌号
@@ -106,9 +149,13 @@ export default {
   },
   computed: mapState(['fingerInfo', 'rfids', 'reqData', 'selectCar']),
   created () {
+<<<<<<< HEAD
     this.borrowUser = this.selectCar.borrowUser
     this.CarNumber = this.selectCar.no
     console.log(11)
+=======
+     keybox.readOutsideRfidData(null, null)
+>>>>>>> 8246c77df017a676d85c858967c4fb40919fb8bd
     // 流程step1: 启动指纹设备，监听回调
     this.fingerprintHandler()
     this.timer = setInterval(() => {
@@ -118,7 +165,7 @@ export default {
           clearInterval(this.timer)
           this.timer = null
         }
-        this.$router.push('home')
+        this.$router.push('index')
       }
     }, 1000)
   },
@@ -138,7 +185,7 @@ export default {
     fingerprint.close()
   },
   methods: {
-    ...mapMutations(['selectCar', 'setAppBgi']),
+    ...mapMutations(['setAppBgi', 'setReqData']),
     cancel () {
       this.$router.push('keylist')
     },
@@ -147,11 +194,17 @@ export default {
       this.showMask = false
     },
     fingerprintCallback(state, data) {
-      if (state == 20) {
+      console.log('启动指纹设备')
+      if (state == 10) {
+        console.log('设备打开成功');
+      }else if(state == 11){
+        console.log('设备已打开，无需重复的打开');
+      }else if (state == 20) {
         // message({
         //   message: '采集到一枚指纹',
         //   duration: 2000          
         // })
+        console.log('采集到一枚指纹')
         this.currentData = data
       }
     },
@@ -170,18 +223,22 @@ export default {
       })
     },
     preBorrowHandler () {
+      console.log('keybox.preBorrow')
       // 借用钥匙的预处理，此指令会让转盘把指定的盒柜转到出口位置
       keybox.preBorrow(this.reqData.boxNo, this.rfids, window, this.preBorrowCallback)
     },
     preBorrowCallback (state, data) {
+      console.log('借用钥匙的预处理')
+      let that = this
       if (state === -1) {
         message.error('盒子正在执行其他操作，不能执行本次指令')
       } else if (state === -100) {
         message.error('盒子中钥匙不存在')
       } else if (state === -200) {
         message.error('盒子中的钥匙的rfid与预期不符')
-      } else if (state >= 0 && state <= 100) {
-        this.preBorrowPercentage = state
+      } else if (state === 100) {
+        console.log('盒子转出进度：', data)
+        this.preBorrowPercentage = parseInt(data)
       }
     },
     borrowingHandler () {
@@ -189,6 +246,7 @@ export default {
       keybox.borrowing(this.reqData.boxNo, this.rfids, window, this.borrowingCallback)
     },
     borrowingCallback (state, data) {
+      console.log('打开盒柜')
       if (state === -1) {
         message.error('盒子正在执行其他操作，不能执行本次指令')
       } else if (state === -2) {
@@ -197,8 +255,11 @@ export default {
         message.error('盒子中钥匙不存在')
       } else if (state === -200) {
         message.error('盒子中的钥匙的rfid与预期不符')
-      } else if (state >= 0 && state <= 100) {
-        this.borrowingPercentage = state
+      } else if (state === 100) {
+        console.log('盒柜打开进度: ', data)
+        this.borrowingPercentage = parseInt(data)
+      } else if (state === 200) { //钥匙已拿走(即没有检测到标签)
+        bus.$emit('borrowingState', state)
       }
     }
   },
@@ -206,9 +267,12 @@ export default {
     currentData (val) {
       // 根据指纹模板查询对应的指纹ID
       let ret = fingerprint.DBCacheFindByTemplate(this.dbHandle, JSON.parse(val).template)
+      // let ret = {
+      //   status: 1
+      // }
       if (ret.status === 1) {
         // 设置用户id
-        this.selectCar({
+        this.setReqData({
           userId: this.fingerInfo[ret.fid-1].id
         })
         if (this.timer) {
@@ -238,7 +302,12 @@ export default {
     borrowingPercentage (val) {
       if (val === 100) {
         // 流程step4: 盒子已打开，到取走钥匙界面
-        this.$router.push('takeAway')
+        // 2018.04.29  把takeAway修改为子路由了，到子路由时需要把定时器关掉
+        if (this.timer) {
+          clearInterval(this.timer)
+          this.timer = null
+        }
+        this.$router.push('/verify/takeAway')
       }
     }
   },

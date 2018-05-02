@@ -35,7 +35,7 @@ export default {
             this.$router.go(-1)
         },
         toHome () {
-            this.$router.push('home')
+            this.$router.push('/home')
         }
     },
     watch: {

@@ -50,15 +50,17 @@ export default new Router({
       component: BackReact,
       meta: {
         title: '首页 > 归还钥匙 > 钥匙感应'
-      }
-    },
-    {
-      path: '/backClose',
-      name: 'backClose',
-      component: BackClose,
-      meta: {
-        title: '首页 > 归还钥匙 > 钥匙放入柜中'
-      }
+      },
+      children: [
+        {
+          path: 'backClose',
+          name: 'backClose',
+          component: BackClose,
+          meta: {
+            title: '首页 > 归还钥匙 > 钥匙放入柜中'
+          }
+        }
+      ]
     },
     {
       path: '/backCheck',
@@ -90,15 +92,17 @@ export default new Router({
       component: Verify,
       meta: {
         title: '首页 > 申请钥匙 > 填写事由 > 身份验证'
-      }
-    },
-    {
-      path: '/takeAway',
-      name: 'takeAway',
-      component: TakeAway,
-      meta: {
-        title: '首页 > 申请钥匙 > 填写事由 > 身份验证 > 取走钥匙'
-      }
-    }  
+      },
+      children: [
+        {
+          path: 'takeAway',
+          name: 'takeAway',
+          component: TakeAway,
+          meta: {
+            title: '首页 > 申请钥匙 > 填写事由 > 身份验证 > 取走钥匙'
+          }
+        }
+      ]
+    }   
   ]
 })

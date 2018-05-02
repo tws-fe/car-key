@@ -9,6 +9,7 @@ const keybox = window.twsdevice.keybox
 //  state=-30, 已关闭，无需重复关闭，由close方法触发
 //  state=-100，因未知异常导致崩溃而无法使用
 function openCallback(state, data) {
+    console.log('open')
   if (state == 10) {
       message('设备打开成功');
   }else if(state == 11){
