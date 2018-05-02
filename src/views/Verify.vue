@@ -104,6 +104,7 @@ export default {
   },
   computed: mapState(['fingerInfo', 'rfids', 'reqData', 'selectCar']),
   created () {
+     keybox.readOutsideRfidData(null, null)
     // 流程step1: 启动指纹设备，监听回调
     this.fingerprintHandler()
     this.timer = setInterval(() => {
