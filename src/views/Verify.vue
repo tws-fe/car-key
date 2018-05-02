@@ -57,7 +57,14 @@
         正在自动打开柜门，请稍候...
       </div>
     </modal-time> 
-    <modal-time v-if="borrowingPercentage>=0&&borrowingPercentage<100"> 
+    <modal-time v-if="borrowingPercentage>=0&&borrowingPercentage<100">
+       <div class="BorrowMan">
+            <span>借用人:&nbsp;{{selectCar.borrowUser}}</span>
+            <span>车牌号:&nbsp;{{selectCar.no}}</span>
+      </div>
+      <div class="ProgressBar">
+          <img src="../assets/verify/ProgressBar.gif">
+      </div> 
       <div class="prompt_txt">
         正在自动打开盒子，请稍候...
       </div>
@@ -96,7 +103,7 @@ export default {
       timedown: 60,
       timer: null,
       preBorrowPercentage: -1, //盒子转动的进度
-      borrowingPercentage: -1, //打开盒子的进度
+      borrowingPercentage: 1, //打开盒子的进度
       showMask: true,
       msgs: ['指纹读头&nbsp;(&nbsp;人脸识别&nbsp;)&nbsp;读取不成功', '是否重新&nbsp;(&nbsp;识别&nbsp;)&nbsp;？']
     }
