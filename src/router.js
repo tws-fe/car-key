@@ -7,9 +7,8 @@ import TakeAway from './views/TakeAway.vue'
 import BackReact from './views/BackReact.vue'
 import BackClose from './views/BackClose.vue'
 import BackCheck from './views/BackCheck.vue'
-import BackSuccess from './views/BackSuccess.vue'
+import Success from './views/Success.vue'
 import Verify from './views/Verify.vue'
-import Test from './views/Test.vue'
 
 Vue.use(Router)
 
@@ -71,19 +70,11 @@ export default new Router({
       }
     },
     {
-      path: '/backSuccess',
-      name: 'backSuccess',
-      component: BackSuccess,
+      path: '/success',
+      name: 'success',
+      component: Success,
       meta: {
         title: '首页 > 归还钥匙 > 钥匙归还成功'
-      }
-    },
-    {
-      path: '/test',
-      name: 'test',
-      component: Test,
-      meta: {
-        title: '首页 > 布局测试'
       }
     },
     {

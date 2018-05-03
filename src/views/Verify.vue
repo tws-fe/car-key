@@ -73,10 +73,10 @@
       </div>
     </modal-time> 
 
-    <!-- <error-mask v-show="showMask" :msgs="msgs">
+    <error-mask v-show="showMask" :msgs="msgs">
       <div class="error_btn" @click="confirm"></div>
       <div class="error_btn" @click="cancel"></div>
-    </error-mask> -->
+    </error-mask>
 
     <router-view></router-view>
   </div>
@@ -107,14 +107,13 @@ export default {
       timer: null,
       preBorrowPercentage: -1, //盒子转动的进度
       borrowingPercentage: -1, //打开盒子的进度
-      showMask: true,
+      showMask: false,
       msgs: ['指纹读头&nbsp;(&nbsp;人脸识别&nbsp;)&nbsp;读取不成功', '是否重新&nbsp;(&nbsp;识别&nbsp;)&nbsp;？']
     }
   },
   computed: mapState(['fingerInfo', 'rfids', 'reqData', 'selectCar']),
   created () {
     // 流程step1: 启动指纹设备，监听回调
-    // this.preBorrowHandler()
     this.fingerprintHandler()
     this.timer = setInterval(() => {
       this.timedown--
@@ -143,16 +142,15 @@ export default {
     fingerprint.close()
   },
   methods: {
-    ...mapMutations(['setAppBgi', 'setReqData']),
+    ...mapMutations(['setAppBgi', 'setReqData', 'setSelectCar']),
     cancel () {
-      this.$router.push('keylist')
+      this.$router.push('/home')
     },
     confirm () {
       this.timedown = 60
       this.showMask = false
     },
     fingerprintCallback(state, data) {
-      console.log('启动指纹设备')
       if (state == 10) {
         console.log('设备打开成功');
       }else if(state == 11){
@@ -175,9 +173,11 @@ export default {
       this.dbHandle = this.DBCacheObj.dbHandle
       // 遍历后台返回的指纹数据，添加到指纹库
       this.fingerInfo.forEach(item => {
-        // 获取指纹库记录数据
-        let icount = fingerprint.DBCacheCount(this.dbHandle)
-        fingerprint.DBCacheAdd(this.dbHandle, icount+1, item.fingerData.slice(3))
+        item.fingerData.forEach(list => {
+          // 获取指纹库记录数据
+          let icount = fingerprint.DBCacheCount(this.dbHandle)
+          fingerprint.DBCacheAdd(this.dbHandle, icount+1, list.template)
+        })
       })
     },
     preBorrowHandler () {
@@ -186,7 +186,6 @@ export default {
       keybox.preBorrow(this.reqData.boxNo, this.rfids, window, this.preBorrowCallback)
     },
     preBorrowCallback (state, data) {
-      console.log('借用钥匙的预处理')
       let that = this
       if (state === -1) {
         message.error('盒子正在执行其他操作，不能执行本次指令')
@@ -204,7 +203,6 @@ export default {
       keybox.borrowing(this.reqData.boxNo, this.rfids, window, this.borrowingCallback)
     },
     borrowingCallback (state, data) {
-      console.log('打开盒柜')
       if (state === -1) {
         message.error('盒子正在执行其他操作，不能执行本次指令')
       } else if (state === -2) {
@@ -233,6 +231,11 @@ export default {
         this.setReqData({
           userId: this.fingerInfo[ret.fid-1].id
         })
+        // 设置借用人姓名
+        this.setSelectCar(Object.assign({},this.selectCar,{
+          borrowUser: this.fingerInfo[ret.fid-1].name
+        }))
+
         if (this.timer) {
           clearInterval(this.timer)
           this.timer = null
@@ -242,13 +245,18 @@ export default {
           type: 'success',
           duration: 2000
         })
+
+        // 关闭指纹设备
+        fingerprint.close()
+
         // 流程step2：匹配到指纹，开启盒子转动
         this.preBorrowHandler()
       } else {
-        message({
-          message: '指纹不匹配',
-          type: 'error'
-        })
+        // message({
+        //   message: '指纹不匹配',
+        //   type: 'error'
+        // })
+        this.showMask = true
       }  
     },
     preBorrowPercentage (val) {

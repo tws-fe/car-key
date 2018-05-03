@@ -30,7 +30,7 @@
               </div>
              
               <div class="kj" :style="{'background':list.borrowStatus==1?'#e85744':'#0374be'}">
-                <span v-show="list.borrowStatus==1">已借出&nbsp;|&nbsp;超过{{list.overtime}}</span>
+                <span v-show="list.borrowStatus==1">已借出&nbsp;{{list.overtime?'|&nbsp;超时'+list.overtime:''}}</span>
                 <span v-show="list.borrowStatus!=1">可借</span>
               </div>                  
             </div>
@@ -44,12 +44,12 @@
       <div class="swiper-pagination"></div>
     </div>
 
-    <!--违归还弹框-->
+    <!--未归还弹框-->
     <div class="back_tanmu flex" v-if="showPop" @click="showPop=false">
        
       <div class="backreturn">
         <div class="kj" style="background:red">
-             已借出&nbsp;|&nbsp;超时{{activeList.overtime}}  
+             已借出&nbsp;{{activeList.overtime?'|&nbsp;超时'+activeList.overtime:''}}  
        </div>  
          
             <div class="close_img" @click="showPop=false">
@@ -149,6 +149,8 @@ export default {
       if ( minutes > 0 ) {
         return minutes + '分钟'
       }
+      // 未超时
+      return ''
     },
     reqHandler (lists) {
       lists.forEach(item => {

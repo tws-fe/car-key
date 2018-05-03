@@ -7,22 +7,15 @@
 </template>
 
 <script>
-import {mapState, mapMutations} from 'vuex'
 export default {
-  name: 'BackSuccess',
+  name: 'Success',
   data () {
     return {
       timedown: 3,
-      timer: null,
-      borrowUser:'董小姐',
-      CarNumber:'JB6666'
+      timer: null
     }
   },
-  computed: mapState(['selectCar']),
   created () {
-    //没有数据先停掉
-   // borrowUser = this.selectCar.borrowUser
-   // CarNumber = this.selectCar.no
     this.timer = setInterval(() => {
       this.timedown--
       if (this.timedown === 0) {

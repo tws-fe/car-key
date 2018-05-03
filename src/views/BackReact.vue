@@ -14,8 +14,8 @@
             <img src="../assets/verify/ProgressBar.gif">
         </div>
         <div class="BorrowMan">
-              <span>借用人:&nbsp;{{selectCar.borrowUser}}</span>
-              <span>车牌号:&nbsp;{{selectCar.no}}</span>
+              <span>借用人:&nbsp;{{borrowData.userName}}</span>
+              <span>车牌号:&nbsp;{{borrowData.carNo}}</span>
         </div>
    </modal-time>
 
@@ -28,8 +28,8 @@
               <img src="../assets/verify/ProgressBar.gif">
           </div>
           <div class="BorrowMan">
-                <span>借用人:&nbsp;{{selectCar.borrowUser}}</span>
-                <span>车牌号:&nbsp;{{selectCar.no}}</span>
+                <span>借用人:&nbsp;{{borrowData.userName}}</span>
+                <span>车牌号:&nbsp;{{borrowData.carNo}}</span>
           </div>
     </modal-time>
 
@@ -60,19 +60,12 @@ export default {
       timer: null,
       showMask: false,
       errorCount: 0,
-      borrowUser:null,//借用人
-      CarNumber:null,//车牌号
       msgs: ['钥匙感应（第一次）不成功', '二次失败将自动返回首页']
     }
   },
-  computed: mapState(['reqData', 'rfids','selectCar']),
+  computed: mapState(['reqData', 'rfids','selectCar', 'borrowData']),
   created () {
-    // this.borrowUser = this.selectCar.borrowUser
-    // this.CarNumber = this.selectCar.no
-    this.borrowUser = ''
-    this.CarNumber = ''
     // 如果是首页成功感应过来的，直接调用preReturnHandler
-    console.log(this.$route.query.isRead)
     if (this.$route.query.isRead) {
       this.preReturnHandler()
     } else {
@@ -85,7 +78,7 @@ export default {
     this.clearTime()
   },
   methods: {
-    ...mapMutations(['setReqData', 'setRfids']),
+    ...mapMutations(['setReqData', 'setRfids', 'setBorrowData']),
     clearTime () {
       if (this.timer) {
         clearInterval(this.timer)
@@ -101,20 +94,19 @@ export default {
       this.timedown--
       if (this.timedown === 0) {
         this.clearTime()
-        // this.$router.push('/')
+        this.$router.push('/home')
       }
     },
     readOutsideRfidHandler () {
-      console.log('调用keybox.readOutsideRfidData, 参数：', window, this.readOutsideRfidCallback)
+      // console.log('调用keybox.readOutsideRfidData, 参数：', window, this.readOutsideRfidCallback)
       keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
     },
     readOutsideRfidCallback (state, data) {
-      console.log('readOutsideRfidCallback:', state, data)
       if (state === -100) {
         this.errorCount++
         if (this.errorCount === 2) {
           this.clearTime()
-          this.$router.push('/')
+          this.$router.push('/home')
         }
         // message.error('连接rfid失败')
         this.showMask = true
@@ -127,8 +119,8 @@ export default {
           type: 'success',
           duration: 2000
         })
-
-        let rfids = data.slice(1, data.length-1)
+        // 硬件js返回的data是string：'["AABBCCDDEEFFDD1122","sdf"]' ==> 'AABBCCDDEEFFDD1122,sdf'
+        let rfids = data.slice(1, data.length-1).replace(/"/g,'')
         fetch(url.keyByChips, {
           deviceId: this.reqData.deviceId,
           chips: rfids
@@ -141,7 +133,7 @@ export default {
             keyId: data.id,
             carId: data.carId,
             boxNo: data.boxNo,
-            userId: '',
+            userId: data.userId,
             orgId: data.orgId,
             orgCode: data.orgCode,
             remark: data.remark
@@ -150,6 +142,13 @@ export default {
           this.setRfids(data.keyChips.map(item => {
             return item.chipId
           }).join(','))
+
+          // 设置借用人和车牌号
+          this.setBorrowData({
+            userName: data.userName,
+            carNo: data.carNo
+          })
+
           this.preReturnHandler()
         })
       }
@@ -157,12 +156,13 @@ export default {
     preReturnHandler () {
       //归还钥匙的预处理，此指令会让转盘把指定的盒柜转到出口位置
       console.log('调用keybox.readOutsideRfidData, 参数：null,null' )
-      keybox.readOutsideRfidData(null, null)
+      // 模拟调试时屏蔽，上线时需要打开，用env变量来判断处理
+      if (process.env.VUE_APP_API === 'real') {
+        keybox.readOutsideRfidData(null, null)
+      }
       setTimeout(() => {
-        console.log('调用keybox.preReturn', '01', 'E280110C20007096677408DF')
-        keybox.preReturn('01', 'E280110C20007096677408DF', window, this.preReturnCallback)
-        // console.log('调用keybox.preReturn',this.reqData.boxNo, this.rfids)
-        // keybox.preReturn(this.reqData.boxNo, this.rfids, window, this.preReturnCallback)
+        console.log('调用keybox.preReturn')
+        keybox.preReturn(this.reqData.boxNo, this.rfids, window, this.preReturnCallback)
       }, 100)
     },
     preReturnCallback (state, data) {
@@ -178,9 +178,7 @@ export default {
     returningHandler () {
       console.log('调用keybox.returning')
       //归还钥匙,打开出口的盒子
-      keybox.returning('01', 'E280110C20007096677408DF',  window, this.returningCallback)
-      
-      // keybox.returning(this.reqData.boxNo, this.rfids, window, this.returningCallback)
+      keybox.returning(this.reqData.boxNo, this.rfids, window, this.returningCallback)
     },
     returningCallback (state, data) {
       if (state === -1) {

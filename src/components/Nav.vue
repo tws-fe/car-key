@@ -73,7 +73,7 @@ export default {
             margin-bottom: 8px;
         }
         .nax_txt_img {
-            width: 316px;
+            width: 346px;
             height: 24px;
         }
     }

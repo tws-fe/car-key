@@ -34,14 +34,12 @@ export default {
   created () {
     if (!sessionStorage.getItem('keyboxOpen')) {
       keybox.open(window, this.openCallback)
+    } else {
+      keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
     }
   },
-  // destroyed () {
-  //   console.log('调用keybox.readOutsideRfidData, null, null')
-  //   keybox.readOutsideRfidData(null, null)
-  // },
   methods: {
-    ...mapMutations(['setReqData', 'setRfids']),
+    ...mapMutations(['setReqData', 'setRfids', 'setBorrowData']),
     readOutsideRfidCallback (state, data) {
       console.log('readOutsideRfidCallback: ', state, data)
       if (state === -100) {
@@ -49,7 +47,8 @@ export default {
       } 
       if (state === 100) {
 
-        let rfids = data.slice(1, data.length-1)
+        // 硬件js返回的data是string：'["AABBCCDDEEFFDD1122","sdf"]' ==> 'AABBCCDDEEFFDD1122,sdf'
+        let rfids = data.slice(1, data.length-1).replace(/"/g,'')
         fetch(url.keyByChips, {
           deviceId: this.reqData.deviceId,
           chips: rfids
@@ -60,7 +59,7 @@ export default {
             keyId: data.id,
             carId: data.carId,
             boxNo: data.boxNo,
-            userId: '',
+            userId: data.userId,
             orgId: data.orgId,
             orgCode: data.orgCode,
             remark: data.remark
@@ -69,6 +68,12 @@ export default {
           this.setRfids(data.keyChips.map(item => {
             return item.chipId
           }).join(','))
+
+          // 设置借用人和车牌号
+          this.setBorrowData({
+            userName: data.userName,
+            carNo: data.carNo
+          })
                     
           this.$router.push({name: 'backReact', query:{isRead: true}})
         })
@@ -93,12 +98,12 @@ export default {
         message('设备打开成功')
         // console.log('调用keybox.readOutsideRfidData', window, this.readOutsideRfidCallback)
         keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
-        sessionStorage.setItem('keyboxOpen', data)
+        sessionStorage.setItem('keyboxOpen', state)
       } else if (state == 11){
         message('设备已打开，无需重复的打开')
         // console.log('调用keybox.readOutsideRfidData', window, this.readOutsideRfidCallback)
         keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
-        sessionStorage.setItem('keyboxOpen', data)
+        sessionStorage.setItem('keyboxOpen', state)
       } else if (state == 30) {
         message('设备已关闭')
         sessionStorage.removeItem('keyboxOpen')

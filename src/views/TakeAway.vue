@@ -112,7 +112,7 @@ export default {
   name: 'TakeAway',
   data () {
     return {
-      borrowedPercentage: 10,
+      borrowedPercentage: -1,
       timedown: 60,
       timer: null
     }
@@ -138,7 +138,9 @@ export default {
         if (this.timer) {
           clearInterval(this.timer)
           this.timer = null
-          this.borrowedHandler('borrowingState=200')
+          setTimeout(() => {
+            this.borrowedHandler('borrowingState=200')
+          }, 1000)
         }
       }
     })
@@ -157,7 +159,6 @@ export default {
       keybox.borrowed(this.reqData.boxNo, this.rfids, window, this.borrowedCallback)
     },
     borrowedCallback (state, data) {
-      console.log('关闭盒子')
       if (state === -1) {
         message.error('盒子正在执行其他操作，不能执行本次指令')
       } else if (state === -100) {
@@ -174,7 +175,7 @@ export default {
       } else if (state === 200) {
         console.log('state：', state)
         fetch(url.borrowAndReback, this.reqData).then(res => {
-          this.$router.push({name: 'index'})
+          this.$router.push('/home')
         })
       }
     }

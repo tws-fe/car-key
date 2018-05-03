@@ -22,17 +22,24 @@ export default new Vuex.Store({
       keyId: '',
       carId: '',
       deviceId: '',
-      boxNo: '01',
+      boxNo: '',
       userId: '',
       orgId: '',
       orgCode: '',
       remark: '',
       bhours: ''
     },
-    rfids: 'E280110C20007096677408DF',
-    appBgi: '/static/sy-bj.png'
+    rfids: '',
+    appBgi: '/static/sy-bj.png',
+    borrowData: {
+      userName: '',
+      carNo: ''
+    }
   },
   mutations: {
+    setBorrowData (state, data) {
+      state.borrowData = data
+    },
     setRfids (state, data) {
       state.rfids = data
     },
