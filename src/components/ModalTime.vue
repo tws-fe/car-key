@@ -19,7 +19,7 @@ export default {
 .error_mask {
   display: flex;
 }
-.error_box {
+>>> .error_box {
   width: 790px;
   height: 516px;
   margin: auto;
@@ -77,10 +77,10 @@ export default {
   background-size: cover;
 }
 >>> .prompt_txt{
-   margin-top: 81px;
    text-align: center;
    font-size: 26px;
    color: #0C151E;
+   margin-top: 52px
  }
  
 >>> .ProgressBar{
@@ -96,13 +96,18 @@ export default {
   width: 550px;
   margin-left: 120px;
   font-size: 30px;
-  margin-top: 126px;
-  color: #1f262f
+  color: #1f262f;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 55px;
 }
->>> .BorrowMan span:last-child
-{ 
- margin-left: 52px;
+.validate_sucess{
+  text-align:center;
+  color: #ec7d1a;
+  font-size: 62px;
+  margin-top: 64px;
 }
+
 </style>
 
 
