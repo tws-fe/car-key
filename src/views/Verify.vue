@@ -73,7 +73,7 @@
       </div>
     </modal-time> 
 
-<!--    <error-mask v-show="showMask" :msgs="msgs">
+    <!-- <error-mask v-show="showMask" :msgs="msgs">
       <div class="error_btn" @click="confirm"></div>
       <div class="error_btn" @click="cancel"></div>
     </error-mask> -->
@@ -103,22 +103,16 @@ export default {
       currentData: {}, //采集当前指纹的数据
       DBCacheObj: {}, //创建指纹库的返回值
       dbHandle: 0, //创建指纹库对应的句柄
-      timedown: 6,
+      timedown: 60,
       timer: null,
       preBorrowPercentage: -1, //盒子转动的进度
       borrowingPercentage: -1, //打开盒子的进度
       showMask: true,
-      borrowUser:null,//借用人
-      CarNumber:null,//车牌号
       msgs: ['指纹读头&nbsp;(&nbsp;人脸识别&nbsp;)&nbsp;读取不成功', '是否重新&nbsp;(&nbsp;识别&nbsp;)&nbsp;？']
     }
   },
   computed: mapState(['fingerInfo', 'rfids', 'reqData', 'selectCar']),
   created () {
-    // this.borrowUser = this.selectCar.borrowUser
-    // this.CarNumber = this.selectCar.no
-    this.borrowUser = ''
-    this.CarNumber = ''
     // 流程step1: 启动指纹设备，监听回调
     // this.preBorrowHandler()
     this.fingerprintHandler()

@@ -13,7 +13,7 @@
                 v-for="item in options"
                 :key="item.id"
                 :label="item.remark"
-                :value="item.id">
+                :value="item.remark">
               </el-option>
         </el-select>
                </div>
@@ -350,7 +350,7 @@
 import {mapMutations, mapState} from 'vuex'
 import {url,fetch} from '../api'
 import Vue from 'vue'
-import {Select, Option } from 'element-ui'
+import {Select, Option, message } from 'element-ui'
 Vue.use(Select)
 Vue.use(Option)
 export default {
@@ -451,6 +451,14 @@ export default {
        }
     },
     toVerify () {
+      if (!this.value) {
+        message({
+          message: '请选择借用事由',
+          type: 'error'
+        })
+        return
+      }
+
       // 函数节流处理，按钮最好有loading状态
       if (this.btnLoading) return
       this.btnLoading = true

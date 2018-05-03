@@ -4,17 +4,17 @@
       <div class="swiper-wrapper" >
         <div class="swiper-slide"  v-for="(item,index) in lists" :key="index">
           <div class="car_box_container">
-            <div class="car_box" :style="{'background-color':list.isStatus2==1?'#fff':'#0368ba'}" 
+            <div class="car_box" :style="{'background-color':list.borrowStatus==1?'#fff':'#0368ba'}" 
               v-for="list in item" 
               :key="list.id" 
               @click="choose(list)">
               <div class="car_box_img">
                 <img :src="list.imageUrl">
-                <div class="zhezao flex" v-show="list.isStatus2==1">
+                <div class="zhezao flex" v-show="list.borrowStatus==1">
                   <div>点击查看详情</div>
                 </div>
               </div>
-              <div class="flex_space car_box_bot" :style="{'color':list.isStatus2==1?'#000':'#fff'}">
+              <div class="flex_space car_box_bot" :style="{'color':list.borrowStatus==1?'#000':'#fff'}">
                 <table style="width:100%">
                     <tr style="height:30px; line-height:30px">
                       <td style="text-align:right">车牌号：</td>
@@ -29,9 +29,9 @@
                 </table>
               </div>
              
-              <div class="kj" :style="{'background':list.isStatus2==1?'#e85744':'#0374be'}">
-                <span v-show="list.isStatus2==1">已借出&nbsp;|&nbsp;超过{{list.overtime}}</span>
-                <span v-show="list.isStatus2!=1">可借</span>
+              <div class="kj" :style="{'background':list.borrowStatus==1?'#e85744':'#0374be'}">
+                <span v-show="list.borrowStatus==1">已借出&nbsp;|&nbsp;超过{{list.overtime}}</span>
+                <span v-show="list.borrowStatus!=1">可借</span>
               </div>                  
             </div>
           </div> 
@@ -87,7 +87,7 @@
                     <td class="td_right">车牌号码：</td>
                     <td>{{activeList.no}}</td>
                     <td class="td_right">预计归还时间：</td>
-                    <td>{{toDateString(activeList.RebackDate)}}</td>
+                    <td>{{toDateString(activeList.rebackDate)}}</td>
                   </tr>
                   <tr>
                     <td class="td_right">品牌型号：</td>
@@ -152,8 +152,8 @@ export default {
     },
     reqHandler (lists) {
       lists.forEach(item => {
-        if (item.isStatus2 === 1) {
-          item.overtime = this.overtimeString(item.RebackDate)
+        if (item.borrowStatus === 1) {
+          item.overtime = this.overtimeString(item.rebackDate)
         }
         // 真实环境下需要拼接imgHost
         if (!item.imageUrl.startsWith('http')) {
@@ -199,7 +199,7 @@ export default {
       })
     },
     choose (list) {
-      if (list.isStatus2 === 1) {
+      if (list.borrowStatus === 1) {
         this.showPop = true
         this.activeList = list
         return
