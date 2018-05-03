@@ -4,14 +4,34 @@
       <div class="error_title">
         温馨提示
       </div>
-      <slot></slot>
+      <div v-if="!data.recording">
+        <div class="validate_sucess">验证成功</div>
+        <div class="prompt_txt">
+            {{data.msg}}
+          </div>
+          <div class="ProgressBar">
+            <img src="../assets/verify/ProgressBar.gif">
+          </div>
+          <div class="BorrowMan">
+            <span>借用人:&nbsp;{{data.user}}</span>
+            <span>车牌号:&nbsp;{{data.no}}</span>
+        </div>
+      </div>
+      <div class="modal-container" v-if="data.recording">
+        <div class="prompt_txt">
+          系统正在记录，请稍候...
+        </div>
+        <div class="ProgressBar">
+          <img src="../assets/verify/ProgressBar.gif">
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['msgs', 'state']
+  props: ['data']
 }
 </script>
 
@@ -107,7 +127,12 @@ export default {
   font-size: 62px;
   margin-top: 64px;
 }
-
+.modal-container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
 </style>
 
 

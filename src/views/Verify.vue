@@ -45,32 +45,11 @@
       <p class="timedown">{{timedown}}</p>
       <p class="timemsg">{{timedown}}秒后自动关闭此页面</p>
     </div>
-    <modal-time v-if="preBorrowPercentage>=0&&preBorrowPercentage<100">
-      <div class="validate_sucess">验证成功</div>
-       <div class="prompt_txt">
-        正在自动打开柜门，请稍候...
-      </div>
-      <div class="ProgressBar">
-          <img src="../assets/verify/ProgressBar.gif">
-      </div>
-      <div class="BorrowMan">
-            <span>借用人:&nbsp;{{selectCar.borrowUser}}</span>
-            <span>车牌号:&nbsp;{{selectCar.no}}</span>
-      </div>
-     
+    <modal-time v-if="preBorrowPercentage>=0&&preBorrowPercentage<100" 
+      :data="{msg:'正在自动打开柜门，请稍候...', user:selectCar.borrowUser, no:selectCar.no}">
     </modal-time> 
-    <modal-time v-if="borrowingPercentage>=0&&borrowingPercentage<100">
-    <div class="validate_sucess">验证成功</div>
-      <div class="prompt_txt">
-        正在自动打开盒子，请稍候...
-      </div>
-      <div class="ProgressBar">
-          <img src="../assets/verify/ProgressBar.gif">
-      </div>
-      <div class="BorrowMan">
-            <span>借用人:&nbsp;{{selectCar.borrowUser}}</span>
-            <span>车牌号:&nbsp;{{selectCar.no}}</span>
-      </div>
+    <modal-time v-if="borrowingPercentage>=0&&borrowingPercentage<100" 
+       :data="{msg:'正在自动打开盒子，请稍候...', user:selectCar.borrowUser, no:selectCar.no}">
     </modal-time> 
 
     <error-mask v-show="showMask" :msgs="msgs">
