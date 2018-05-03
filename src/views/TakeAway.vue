@@ -5,26 +5,25 @@
       <div class="cupBoard">
           <img style="width:100%;" src="../assets/key/openbox.jpg">
           <div class="keybox">
-                <img style="width:100%;" src="../assets/key/take_key.png">
+            <img style="width:100%;" src="../assets/key/take_key.png">
           </div>
       </div>
       <div class="timedown timedown_base">{{timedown}}秒</div>
       <div class="msg back_msg_base">请在钥匙盒内取走钥匙，柜门{{timedown}}秒后自动关闭或手动关闭柜口</div>
       <!-- todo:关闭盒子的进度条 -->
-         <modal-time v-if="borrowedPercentage>=0&&borrowedPercentage<100">
-          <div class="validate_sucess">验证成功</div>
-          <div class="prompt_txt">
-             盒子正在关闭，请稍候...
-          </div>
-          <div class="ProgressBar">
-              <img src="../assets/verify/ProgressBar.gif">
-          </div>
-          <div class="BorrowMan">
-                <span>借用人:&nbsp;{{selectCar.borrowUser}}</span>
-                <span>车牌号:&nbsp;{{selectCar.no}}</span>
-          </div>
-        
-        </modal-time> 
+      <modal-time v-if="borrowedPercentage>=0&&borrowedPercentage<100">
+        <div class="validate_sucess">验证成功</div>
+        <div class="prompt_txt">
+          盒子正在关闭，请稍候...
+        </div>
+        <div class="ProgressBar">
+          <img src="../assets/verify/ProgressBar.gif">
+        </div>
+        <div class="BorrowMan">
+          <span>借用人:&nbsp;{{selectCar.borrowUser}}</span>
+          <span>车牌号:&nbsp;{{selectCar.no}}</span>
+        </div>
+      </modal-time> 
     </div>
     
   </div>
@@ -181,9 +180,10 @@ export default {
     }
   },
   watch: {
-    components: {
-        ModalTime
-    }
+   
+  },
+  components: {
+    ModalTime
   }
 }
 </script>

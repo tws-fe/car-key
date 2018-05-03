@@ -103,9 +103,9 @@ export default {
       currentData: {}, //采集当前指纹的数据
       DBCacheObj: {}, //创建指纹库的返回值
       dbHandle: 0, //创建指纹库对应的句柄
-      timedown: 60,
+      timedown: 6,
       timer: null,
-      preBorrowPercentage: 1, //盒子转动的进度
+      preBorrowPercentage: -1, //盒子转动的进度
       borrowingPercentage: -1, //打开盒子的进度
       showMask: true,
       borrowUser:null,//借用人
@@ -115,19 +115,13 @@ export default {
   },
   computed: mapState(['fingerInfo', 'rfids', 'reqData', 'selectCar']),
   created () {
-<<<<<<< HEAD
-       
-     keybox.readOutsideRfidData(null, null)
-    // 流程step1: 启动指纹设备，监听回调
-    // this.fingerprintHandler()
-    this.preBorrowHandler()
-=======
-    this.borrowUser = this.selectCar.borrowUser
-    this.CarNumber = this.selectCar.no
+    // this.borrowUser = this.selectCar.borrowUser
+    // this.CarNumber = this.selectCar.no
+    this.borrowUser = ''
+    this.CarNumber = ''
     // 流程step1: 启动指纹设备，监听回调
     // this.preBorrowHandler()
     this.fingerprintHandler()
->>>>>>> a8b0b29bc2a96823f3831f6337137fd9813f2b1f
     this.timer = setInterval(() => {
       this.timedown--
       if (this.timedown === 0) {
@@ -135,7 +129,7 @@ export default {
           clearInterval(this.timer)
           this.timer = null
         }
-        this.$router.push('home')
+        this.$router.push('/home')
       }
     }, 1000)
   },

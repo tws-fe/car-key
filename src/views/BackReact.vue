@@ -6,7 +6,6 @@
     <div class="msg back_msg_base">请将钥匙放在感应区感应，等待柜门自动打开</div>
 
     <modal-time v-if="preReturnPercentage>=0&&preReturnPercentage<100">
-<<<<<<< HEAD
       <div class="validate_sucess">验证成功</div>
         <div class="prompt_txt">
           正在自动打开柜门，请稍候...
@@ -32,31 +31,6 @@
                 <span>借用人:&nbsp;{{selectCar.borrowUser}}</span>
                 <span>车牌号:&nbsp;{{selectCar.no}}</span>
           </div>
-=======
-     <div class="BorrowMan">
-          <span>借用人：{{borrowUser}}</span>
-          <span>车牌号:{{CarNumber}}</span>
-     </div>
-     <div class="ProgressBar">
-         <img src="../assets/verify/ProgressBar.gif">
-     </div>
-      <div class="prompt_txt">
-       正在自动打开柜门，请稍候...
-      </div>   
-   </modal-time>
-
-    <modal-time v-if="returningPercentage>=0&&returningPercentage<100">
-      <div class="BorrowMan">
-          <span>借用人：{{borrowUser}}</span>
-          <span>车牌号:{{CarNumber}}</span>
-     </div>
-     <div class="ProgressBar">
-         <img src="../assets/verify/ProgressBar.gif">
-     </div>
-      <div class="prompt_txt">
-       正在自动打开盒子，请稍候...
-      </div> 
->>>>>>> a8b0b29bc2a96823f3831f6337137fd9813f2b1f
     </modal-time>
 
     <error-mask v-show="showMask" :msgs="msgs">
@@ -93,14 +67,10 @@ export default {
   },
   computed: mapState(['reqData', 'rfids','selectCar']),
   created () {
-<<<<<<< HEAD
-    console.log(this.selectCar);
-=======
     // this.borrowUser = this.selectCar.borrowUser
     // this.CarNumber = this.selectCar.no
     this.borrowUser = ''
     this.CarNumber = ''
->>>>>>> a8b0b29bc2a96823f3831f6337137fd9813f2b1f
     // 如果是首页成功感应过来的，直接调用preReturnHandler
     console.log(this.$route.query.isRead)
     if (this.$route.query.isRead) {
