@@ -1,7 +1,10 @@
 <template>
   <div class="suceess_box mask_base">
     <div class="timedown timedown_base">{{timedown}}秒</div>
-    <div class="msg back_msg_base">{{borrowUser}}，您借用的车辆（{{CarNumber}}）钥匙归还成功</div>
+    <div class="msg back_msg_base">
+      {{$route.query.user}}，<span class="carno_color">{{$route.query.no}}</span>
+      钥匙{{$route.query.isBorrow?'申请':'归还'}}成功，感谢您的使用&nbsp;！
+    </div>
     <img class="suceess_img" src="../assets/back/backSuccess_police.png" alt="">
    </div>
 </template>
@@ -48,5 +51,8 @@ export default {
 }
 .suceess_box {
   background-color: rgba(0,0,0,0.6);
+}
+.carno_color {
+  color: #ffaf16;
 }
 </style>

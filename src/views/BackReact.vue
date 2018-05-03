@@ -5,32 +5,12 @@
     <div class="timedown timedown_base">{{timedown}}秒</div>
     <div class="msg back_msg_base">请将钥匙放在感应区感应，等待柜门自动打开</div>
 
-    <modal-time v-if="preReturnPercentage>=0&&preReturnPercentage<100">
-      <div class="validate_sucess">验证成功</div>
-        <div class="prompt_txt">
-          正在自动打开柜门，请稍候...
-        </div>
-        <div class="ProgressBar">
-            <img src="../assets/verify/ProgressBar.gif">
-        </div>
-        <div class="BorrowMan">
-              <span>借用人:&nbsp;{{borrowData.userName}}</span>
-              <span>车牌号:&nbsp;{{borrowData.carNo}}</span>
-        </div>
+    <modal-time v-if="preReturnPercentage>=0&&preReturnPercentage<100"
+      :data="{msg:'正在自动打开柜门，请稍候...', user:borrowData.userName, no:borrowData.carNo}">
    </modal-time>
 
-    <modal-time v-if="returningPercentage>=0&&returningPercentage<100">
-        <div class="validate_sucess">验证成功</div>
-          <div class="prompt_txt">
-            正在自动打开盒子，请稍候...
-          </div>
-          <div class="ProgressBar">
-              <img src="../assets/verify/ProgressBar.gif">
-          </div>
-          <div class="BorrowMan">
-                <span>借用人:&nbsp;{{borrowData.userName}}</span>
-                <span>车牌号:&nbsp;{{borrowData.carNo}}</span>
-          </div>
+    <modal-time v-if="returningPercentage>=0&&returningPercentage<100"
+      :data="{msg:'正在自动打开盒子，请稍候...', user:borrowData.userName, no:borrowData.carNo}">
     </modal-time>
 
     <error-mask v-show="showMask" :msgs="msgs">
@@ -108,7 +88,7 @@ export default {
           this.clearTime()
           this.$router.push('/home')
         }
-        // message.error('连接rfid失败')
+        message.error('连接rfid失败')
         this.showMask = true
         this.clearTime()
       } 

@@ -4,7 +4,9 @@
       <div class="swiper-wrapper" >
         <div class="swiper-slide"  v-for="(item,index) in lists" :key="index">
           <div class="car_box_container">
-            <div class="car_box" :style="{'background-color':list.borrowStatus==1?'#fff':'#0368ba'}" 
+            <div class="car_box" 
+              :class="{'car_box_able':list.borrowStatus!=1}"
+              :style="{'background-color':list.borrowStatus==1?'#fff':'#0368ba'}" 
               v-for="list in item" 
               :key="list.id" 
               @click="choose(list)">
@@ -299,7 +301,14 @@ export default {
   margin-top: 62px;
   display: inline-block;
   float: left;
+  box-shadow: 2px 3px 8px rgba(0,49,109,.6), inset 1px 1px 1px rgba(255,255,255,.1), inset 0 0 rgba(255,255,255,.17);
 }
+
+.car_box_able {
+  background-image: url(../assets/keylist/carlist_bg.jpg);
+  background-size: cover;
+}
+
 .back_carbox {
   background: white;
   color: #000;

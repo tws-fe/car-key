@@ -14,8 +14,7 @@
       <modal-time v-if="borrowedPercentage>=0&&borrowedPercentage<100" 
         :data="{msg:'盒子正在关闭，请稍候...', user:selectCar.borrowUser, no:selectCar.no}">
       </modal-time> 
-      <modal-time :data="{recording:true}">
-        
+      <modal-time v-if="checking" :data="{recording:true}"> 
       </modal-time> 
     </div>
     
@@ -107,7 +106,8 @@ export default {
     return {
       borrowedPercentage: -1,
       timedown: 60,
-      timer: null
+      timer: null,
+      checking: false
     }
   },
   computed: {
@@ -168,13 +168,25 @@ export default {
       } else if (state === 200) {
         console.log('state：', state)
         fetch(url.borrowAndReback, this.reqData).then(res => {
-          this.$router.push('/home')
+          this.checking = false
+          this.$router.push({
+            path: '/success',
+            query: {
+              user: this.selectCar.borrowUser,
+              no: this.selectCar.no,
+              isBorrow: true
+            }  
+          })
         })
       }
     }
   },
   watch: {
-   
+    borrowedPercentage (val) {
+      if (val === 100) {
+        this.checking = true
+      }
+    }
   },
   components: {
     ModalTime
