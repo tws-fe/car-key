@@ -25,17 +25,23 @@
 import anime from 'animejs'
 import {url, fetch} from '../api'
 import {mapState, mapMutations} from 'vuex'
+import { message } from 'element-ui'
 const keybox = window.twsdevice.keybox
 
 export default {
   name: 'home',
   computed: mapState(['reqData', 'rfids']),
   created () {
-    keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
+    keybox.open(window, this.openCallback)
   },
+  // destroyed () {
+  //   console.log('调用keybox.readOutsideRfidData, null, null')
+  //   keybox.readOutsideRfidData(null, null)
+  // },
   methods: {
     ...mapMutations(['setReqData', 'setRfids']),
     readOutsideRfidCallback (state, data) {
+      console.log('readOutsideRfidCallback: ', state, data)
       if (state === -100) {
 
       } 
@@ -78,6 +84,28 @@ export default {
           this.$router.push(path)
         }
       })
+    },
+    openCallback (state, data) {
+      console.log('open')
+      if (state == 10) {
+          message('设备打开成功');
+          // console.log('调用keybox.readOutsideRfidData', window, this.readOutsideRfidCallback)
+          // keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
+      }else if(state == 11){
+          message('设备已打开，无需重复的打开');
+          // console.log('调用keybox.readOutsideRfidData', window, this.readOutsideRfidCallback)
+          // keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
+      }else  if (state == 30) {
+          message('设备已关闭');
+      }else if(state == -10){
+          message('设备打开失败，失败信息：'+data+'');
+      }else if(state == -30){
+          message('设备已关闭，不能重复关闭');
+      }else if(state == -100){
+          message('设备已崩溃，不能正常使用');
+      }else{
+          message('设备出现异常，错误码：'+state+', 错误信息：'+data+'');
+      }
     }
   }
 }

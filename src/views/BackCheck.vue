@@ -2,9 +2,10 @@
   <div class="mask_base">
     <div class="timedown timedown_base">{{timedown}}秒</div>
     <div class="msg back_msg_base">系统在自动检验中...</div>
+    <img class="key" src="../assets/back/backCheck_key.png" alt="">
     <div class="scan_box">
-      <img class="key" src="../assets/back/backCheck_key.png" alt="">
-      <img ref="checkScan" class="scan" src="../assets/back/backCheck_scan.png" alt="">
+      
+      <img ref="checkScan" class="scan" src="../assets/back/backCheck_scan.png" alt="" >
     </div>
     <error-mask v-show="showMask" :msgs="msgs" :state="okState">
       <div v-if="msgIndex<=1" class="rescan error_btn" @click="reScan" ></div>
@@ -69,7 +70,8 @@
   height: 100%;
   top: 0;
   left: 0;
-  background: url(../assets/verify/zez.png)
+  background: url(../assets/verify/zez.png);
+  background-size: cover;
 }
 .mask_base{
   background-color: rgba(0,0,0,0) !important;
@@ -149,17 +151,20 @@ export default {
 }
 .msg {
   bottom: 126px;
+  z-index: 10;
 }
 .scan_box {
   position: absolute;
   left: 50%;
-  top: 55%;
+  top: 50%;
   transform: translate(-50%, -50%);
   width: 492px;
   height: 502px;
+  z-index: 10;
 }
 .scan_box>img {
   position: absolute;
+  z-index: 10;
 }
 .scan {
   width: 100%;
@@ -168,6 +173,10 @@ export default {
 .key {
   width: 350px;
   height: 350px;
+  position: absolute;
+  top:270px;
+  left:722px;
+
 }
 .error_btn {
   width: 338px;

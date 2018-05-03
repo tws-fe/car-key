@@ -108,16 +108,26 @@ export default {
       preBorrowPercentage: 1, //盒子转动的进度
       borrowingPercentage: -1, //打开盒子的进度
       showMask: true,
+      borrowUser:null,//借用人
+      CarNumber:null,//车牌号
       msgs: ['指纹读头&nbsp;(&nbsp;人脸识别&nbsp;)&nbsp;读取不成功', '是否重新&nbsp;(&nbsp;识别&nbsp;)&nbsp;？']
     }
   },
   computed: mapState(['fingerInfo', 'rfids', 'reqData', 'selectCar']),
   created () {
+<<<<<<< HEAD
        
      keybox.readOutsideRfidData(null, null)
     // 流程step1: 启动指纹设备，监听回调
     // this.fingerprintHandler()
     this.preBorrowHandler()
+=======
+    this.borrowUser = this.selectCar.borrowUser
+    this.CarNumber = this.selectCar.no
+    // 流程step1: 启动指纹设备，监听回调
+    // this.preBorrowHandler()
+    this.fingerprintHandler()
+>>>>>>> a8b0b29bc2a96823f3831f6337137fd9813f2b1f
     this.timer = setInterval(() => {
       this.timedown--
       if (this.timedown === 0) {
@@ -125,7 +135,7 @@ export default {
           clearInterval(this.timer)
           this.timer = null
         }
-        this.$router.push('index')
+        this.$router.push('home')
       }
     }, 1000)
   },
@@ -183,7 +193,7 @@ export default {
       })
     },
     preBorrowHandler () {
-      console.log('keybox.preBorrow')
+      console.log('keybox.preBorrow',this.reqData.boxNo, this.rfids)
       // 借用钥匙的预处理，此指令会让转盘把指定的盒柜转到出口位置
       keybox.preBorrow(this.reqData.boxNo, this.rfids, window, this.preBorrowCallback)
     },

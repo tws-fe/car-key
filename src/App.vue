@@ -5,7 +5,7 @@
       <router-view/>
     <!-- </transition> -->
     <Foot />
-    <DemoNav />
+    <!-- <DemoNav /> -->
   </div>
 </template>
 

@@ -6,6 +6,7 @@
     <div class="msg back_msg_base">请将钥匙放在感应区感应，等待柜门自动打开</div>
 
     <modal-time v-if="preReturnPercentage>=0&&preReturnPercentage<100">
+<<<<<<< HEAD
       <div class="validate_sucess">验证成功</div>
         <div class="prompt_txt">
           正在自动打开柜门，请稍候...
@@ -31,6 +32,31 @@
                 <span>借用人:&nbsp;{{selectCar.borrowUser}}</span>
                 <span>车牌号:&nbsp;{{selectCar.no}}</span>
           </div>
+=======
+     <div class="BorrowMan">
+          <span>借用人：{{borrowUser}}</span>
+          <span>车牌号:{{CarNumber}}</span>
+     </div>
+     <div class="ProgressBar">
+         <img src="../assets/verify/ProgressBar.gif">
+     </div>
+      <div class="prompt_txt">
+       正在自动打开柜门，请稍候...
+      </div>   
+   </modal-time>
+
+    <modal-time v-if="returningPercentage>=0&&returningPercentage<100">
+      <div class="BorrowMan">
+          <span>借用人：{{borrowUser}}</span>
+          <span>车牌号:{{CarNumber}}</span>
+     </div>
+     <div class="ProgressBar">
+         <img src="../assets/verify/ProgressBar.gif">
+     </div>
+      <div class="prompt_txt">
+       正在自动打开盒子，请稍候...
+      </div> 
+>>>>>>> a8b0b29bc2a96823f3831f6337137fd9813f2b1f
     </modal-time>
 
     <error-mask v-show="showMask" :msgs="msgs">
@@ -60,16 +86,27 @@ export default {
       timer: null,
       showMask: false,
       errorCount: 0,
+      borrowUser:null,//借用人
+      CarNumber:null,//车牌号
       msgs: ['钥匙感应（第一次）不成功', '二次失败将自动返回首页']
     }
   },
   computed: mapState(['reqData', 'rfids','selectCar']),
   created () {
+<<<<<<< HEAD
     console.log(this.selectCar);
+=======
+    // this.borrowUser = this.selectCar.borrowUser
+    // this.CarNumber = this.selectCar.no
+    this.borrowUser = ''
+    this.CarNumber = ''
+>>>>>>> a8b0b29bc2a96823f3831f6337137fd9813f2b1f
     // 如果是首页成功感应过来的，直接调用preReturnHandler
+    console.log(this.$route.query.isRead)
     if (this.$route.query.isRead) {
       this.preReturnHandler()
     } else {
+      console.log('调用readOutsideRfidHandler')
       this.readOutsideRfidHandler()
     }
     this.timer = setInterval(this.goTime , 1000)
@@ -94,13 +131,15 @@ export default {
       this.timedown--
       if (this.timedown === 0) {
         this.clearTime()
-        this.$router.push('/')
+        // this.$router.push('/')
       }
     },
     readOutsideRfidHandler () {
+      console.log('调用keybox.readOutsideRfidData, 参数：', window, this.readOutsideRfidCallback)
       keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
     },
     readOutsideRfidCallback (state, data) {
+      console.log('readOutsideRfidCallback:', state, data)
       if (state === -100) {
         this.errorCount++
         if (this.errorCount === 2) {
@@ -141,14 +180,20 @@ export default {
           this.setRfids(data.keyChips.map(item => {
             return item.chipId
           }).join(','))
-
           this.preReturnHandler()
         })
       }
     },
     preReturnHandler () {
       //归还钥匙的预处理，此指令会让转盘把指定的盒柜转到出口位置
-      keybox.preReturn(this.reqData.boxNo, this.rfids, window, this.preReturnCallback)
+      console.log('调用keybox.readOutsideRfidData, 参数：null,null' )
+      keybox.readOutsideRfidData(null, null)
+      setTimeout(() => {
+        console.log('调用keybox.preReturn', '01', 'E280110C20007096677408DF')
+        keybox.preReturn('01', 'E280110C20007096677408DF', window, this.preReturnCallback)
+        // console.log('调用keybox.preReturn',this.reqData.boxNo, this.rfids)
+        // keybox.preReturn(this.reqData.boxNo, this.rfids, window, this.preReturnCallback)
+      }, 100)
     },
     preReturnCallback (state, data) {
       if (state === -1) {
@@ -156,13 +201,16 @@ export default {
       } else if (state === -100) {
         message.error('盒子中有钥匙，不能归还')
       } else if (state === 100) {
-        console.log('preReturn-state: ', state)
+        console.log('preReturn-state: ', state, ' data: ', data)
         this.preReturnPercentage = parseInt(data)
       }
     },
     returningHandler () {
+      console.log('调用keybox.returning')
       //归还钥匙,打开出口的盒子
-      keybox.returning(this.reqData.boxNo, this.rfids, window, this.returningCallback)
+      keybox.returning('01', 'E280110C20007096677408DF',  window, this.returningCallback)
+      
+      // keybox.returning(this.reqData.boxNo, this.rfids, window, this.returningCallback)
     },
     returningCallback (state, data) {
       if (state === -1) {
@@ -173,8 +221,9 @@ export default {
         message.error('盒子中有钥匙，不能归还')
       } else if (state === 100) {
         this.returningPercentage = parseInt(data)
-        console.log('returning-state: ', state)
+        console.log('returning-state: ', state, ' data: ', data)
       } else if (state === 200) { //检测到钥匙已放入
+        console.log('returning-state: ', state)
         bus.$emit('returningState', state)
       }
     }

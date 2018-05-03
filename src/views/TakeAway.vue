@@ -128,8 +128,9 @@ export default {
         if (this.timer) {
           clearInterval(this.timer)
           this.timer = null
+          this.timedown = 0
         }
-        this.borrowedHandler()
+        this.borrowedHandler('timedown')
       }
     }, 1000)
 
@@ -138,8 +139,8 @@ export default {
         if (this.timer) {
           clearInterval(this.timer)
           this.timer = null
+          this.borrowedHandler('borrowingState=200')
         }
-        this.borrowedHandler()
       }
     })
   },
@@ -151,7 +152,8 @@ export default {
   },
   methods: {
     ...mapMutations(['setReqData']),
-    borrowedHandler () {
+    borrowedHandler (msg) {
+      console.log('调用 keybox.borrowed--', msg)
       //领用完毕，立即关闭盒柜，调用本方法前必须成功执行borrowing
       keybox.borrowed(this.reqData.boxNo, this.rfids, window, this.borrowedCallback)
     },
@@ -171,6 +173,7 @@ export default {
         this.borrowedPercentage = parseInt(data)
         console.log('盒子关闭进度：', data)
       } else if (state === 200) {
+        console.log('state：', state)
         fetch(url.borrowAndReback, this.reqData).then(res => {
           this.$router.push({name: 'index'})
         })

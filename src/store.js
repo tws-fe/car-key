@@ -22,14 +22,14 @@ export default new Vuex.Store({
       keyId: '',
       carId: '',
       deviceId: '',
-      boxNo: '',
+      boxNo: '01',
       userId: '',
       orgId: '',
       orgCode: '',
       remark: '',
       bhours: ''
     },
-    rfids: '',
+    rfids: 'E280110C20007096677408DF',
     appBgi: '/static/sy-bj.png'
   },
   mutations: {

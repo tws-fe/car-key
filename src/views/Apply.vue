@@ -3,12 +3,12 @@
        <div class="img_box">
             <img :src="imgUrl">
             <!-- <img src="../assets/police_car.png" alt=""> -->
+            <div class="CarNumber">车牌号：{{CarNumber}}</div>
        </div>
        <div class="main">
            <div class="ly_cause">
-               <div class="ly_cause_left">领用事由：</div>
-               <div class="ly_cause_right" style="width:40vw;">
-           <el-select v-model="value" placeholder="请选择" >
+               <div class="ly_cause_right">
+           <el-select v-model="value" placeholder="选择借用事由" >
               <el-option v-if="options"
                 v-for="item in options"
                 :key="item.id"
@@ -21,8 +21,7 @@
            </div>
            
            <div class="jytime">
-               <div class="jytime_box1">借用时间：</div>
-               <div class="jytime_box2">
+               <div class="jytime_box2" style="margin-left:128px;">
                 <div class="delbox"  @click="conputerhour(-1)">
                  
                 </div>
@@ -69,6 +68,9 @@
                  
                     </div>            
                </div>
+               <div class="crrow">
+                  <img src="../assets/crrow.png">
+               </div>
                <div class="statis">
                     <div>
                        <span>
@@ -76,7 +78,7 @@
                          <span v-show="day!=0">{{day}}天</span>
                          {{hour}}小时
                          </span>
-                  </div>
+                   </div>
                     <div class="nextstep" @click="toVerify"></div>
                </div>
                  
@@ -89,7 +91,7 @@
 </template>
 <style scoped>
   .img_box{
-    width: 852px;
+    width: 824px;
     height: 552px;
     position: absolute;
     top: 168px;
@@ -105,12 +107,11 @@
   .main{
     position: absolute;
     top: 730px;
-    left: 74px;
     width: 100%
   }
   .ly_cause{
     display: flex;
-    justify-content: center;
+    justify-content: left;
   }
    .xl{
     position: absolute;
@@ -137,16 +138,13 @@
     background: #5aa6df;
     color: white !important;
   }
-  .ly_cause_left{
-    color: white;
-    font-size: 30px;
-    height: 52px;
-    line-height: 52px;
-  }
   .ly_cause_right{
     box-shadow: 1px 1px 1px #10457e;
     border-radius: 8px;
     position: relative;
+    width: 826px;
+    margin-left: 555px;
+    height: 54px;
   }
   .ly_cause_input{
     height: 52px;
@@ -231,7 +229,7 @@
   }
   .statis span{
     color: #fa9e5b;
-    margin-left: 48px;
+    
   }
   .statis img{
     width: 238px;
@@ -278,7 +276,7 @@
     background-size: cover;
   }
   .nextstep{
-   margin-left:165px;
+   margin-left:106px;
    width: 238px;
    height: 58px;
    background: url(../assets/next2.png) no-repeat;
@@ -307,6 +305,18 @@
       -webkit-appearance: none !important;
       margin: 0;
   }
+  .CarNumber{
+    text-align: center;
+    font-size: 30px;
+    margin-top: 22px;
+    color: white;
+  }
+  .crrow{
+    float: left;
+    margin-left: 42px;
+    margin-right: 42px;
+    margin-top: 28px;
+  }
   
   
 </style>
@@ -327,6 +337,7 @@
     font-size:1.2vw;
     
   }
+  
   .el-input__icon{
     width:40px;
   }
@@ -353,6 +364,7 @@ export default {
       hour:1,
       day:0,
       options:null,
+      CarNumber:null,
       value: '' //借用理由
     }
   },
@@ -362,7 +374,7 @@ export default {
       let selectCar = this.selectCar
       return selectCar ? selectCar.imageUrl : require('../assets/police_car.png')
     },
-    ...mapState(['selectCar', 'reqData'])
+    ...mapState(['selectCar', 'reqData',])
   },
   created () { 
     this.getLists()
@@ -377,6 +389,7 @@ export default {
       remark: this.value,
       bhours: this.hour + this.day*24
     })
+    this.CarNumber = selectCar.no
   },
   mounted () {
     this.setAppBgi('/static/txsybg.jpg')
@@ -391,7 +404,7 @@ export default {
     getLists () {
       fetch(url.borrowReason).then(res => {
         this.options = res.data.data
-        this.value = this.options[0].remark
+        this.value = this.options.remark
       })
     },
     fo(obj){
