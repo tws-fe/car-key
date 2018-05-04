@@ -1,7 +1,7 @@
 import fetch from './fetch.js'
 
-// let host = 'http://rap2api.taobao.org/app/mock/11500/'
-let host = '/car-web'
+let host = 'http://rap2api.taobao.org/app/mock/11500/'
+// let host = '/car-web'
 if (process.env.VUE_APP_API === 'real') {
   host = '/car-web'
 }

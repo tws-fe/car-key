@@ -14,11 +14,15 @@ export default {
   name: 'Success',
   data () {
     return {
-      timedown: 3,
+      timedown: 300,
       timer: null
     }
   },
   created () {
+    if (!this.$route.query.isBorrow) {
+      this.$route.meta.title = '首页 > 申请钥匙 > 钥匙申请成功'
+    }
+    console.log(this.$route)
     this.timer = setInterval(() => {
       this.timedown--
       if (this.timedown === 0) {
