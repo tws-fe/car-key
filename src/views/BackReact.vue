@@ -5,6 +5,10 @@
     <div class="timedown timedown_base">{{timedown}}秒</div>
     <div class="msg back_msg_base">请将钥匙放在感应区感应，等待柜门自动打开</div>
 
+    <audio  ref="backReact">
+      <source src="/static/backReact.mp3" type="audio/mpeg">
+    </audio>
+
     <modal-time v-if="preReturnPercentage>=0&&preReturnPercentage<100"
       :data="{msg:'正在自动打开柜门，请稍候...', user:borrowData.userName, no:borrowData.carNo}">
    </modal-time>
@@ -53,6 +57,9 @@ export default {
       this.readOutsideRfidHandler()
     }
     this.timer = setInterval(this.goTime , 1000)
+  },
+  mounted () {
+    this.$refs['backReact'].play()
   },
   destroyed () {
     this.clearTime()
@@ -188,6 +195,9 @@ export default {
           clearInterval(this.timer)
           this.timer = null
         }
+        let backReact = this.$refs['backReact']
+        backReact.pause()
+        backReact.load()
         this.$router.push('/backReact/backClose')
       }
     }

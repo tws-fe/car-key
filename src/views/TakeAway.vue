@@ -17,7 +17,9 @@
       <modal-time v-if="checking" :data="{recording:true}"> 
       </modal-time> 
     </div>
-    
+    <audio autoplay >
+      <source src="/static/takeAway.mp3" type="audio/mpeg">
+    </audio>
   </div>
 </template>
 <style scoped>

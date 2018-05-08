@@ -45,6 +45,11 @@
       <p class="timedown">{{timedown}}</p>
       <p class="timemsg">{{timedown}}秒后自动关闭此页面</p>
     </div>
+
+    <audio  ref="verifyAudio">
+      <source src="/static/verify.mp3" type="audio/mpeg">
+    </audio>
+
     <modal-time v-if="preBorrowPercentage>=0&&preBorrowPercentage<100" 
       :data="{msg:'正在自动打开柜门，请稍候...', user:selectCar.borrowUser, no:selectCar.no}">
     </modal-time> 
@@ -108,6 +113,8 @@ export default {
   mounted () {
     this.setAppBgi('/static/verify_bg.jpg')
     // document.querySelector('#app').style.backgroundImage = `url(${require('../assets/verify/verify_bg.jpg')})`
+
+    this.$refs['verifyAudio'].play()
   },
   destroyed () {
     this.setAppBgi('/static/sy-bj.png')
@@ -252,6 +259,9 @@ export default {
           clearInterval(this.timer)
           this.timer = null
         }
+        let verifyAudio = this.$refs['verifyAudio']
+        verifyAudio.pause()
+        verifyAudio.load()
         this.$router.push('/verify/takeAway')
       }
     }

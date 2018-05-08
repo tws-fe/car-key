@@ -6,7 +6,13 @@
       钥匙{{$route.query.isBorrow?'申请':'归还'}}成功，感谢您的使用&nbsp;！
     </div>
     <img class="suceess_img" src="../assets/back/backSuccess_police.png" alt="">
-   </div>
+    <audio ref="applySuccess">
+      <source src="/static/applySuccess.mp3" type="audio/mpeg">
+    </audio>
+    <audio ref="backSuccess">
+      <source src="/static/backSuccess.mp3" type="audio/mpeg">
+    </audio>
+  </div>
 </template>
 
 <script>
@@ -14,25 +20,31 @@ export default {
   name: 'Success',
   data () {
     return {
-      timedown: 300,
+      timedown: 3,
       timer: null
     }
   },
-  created () {
+  mounted () {
     if (!this.$route.query.isBorrow) {
       this.$route.meta.title = '首页 > 申请钥匙 > 钥匙申请成功'
+      this.$refs['backSuccess'].play()
+    } else {
+      this.$refs['applySuccess'].play()
     }
-    console.log(this.$route)
-    this.timer = setInterval(() => {
-      this.timedown--
-      if (this.timedown === 0) {
-        if (this.timer) {
-          clearInterval(this.timer)
-          this.timer = null
+
+    setTimeout(() => {
+      this.timer = setInterval(() => {
+        this.timedown--
+        if (this.timedown === 0) {
+          if (this.timer) {
+            clearInterval(this.timer)
+            this.timer = null
+          }
+          this.$router.push('home')
         }
-        this.$router.push('home')
-      }
-    }, 1000)
+      }, 1000)
+    }, 3000)
+
   },
   destroyed () {
     if (this.timer) {

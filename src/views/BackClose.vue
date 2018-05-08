@@ -11,6 +11,11 @@
       <div class="timedown timedown_base">{{timedown}}秒</div>
       <div class="msg back_msg_base">请把钥匙放到盒内关闭柜门</div>
   </div>
+
+  <audio autoplay >
+    <source src="/static/backClose.mp3" type="audio/mpeg">
+  </audio>
+
   <modal-time v-if="returnedPercentage>=0&&returnedPercentage<100"
       :data="{msg:'正在自动关闭盒子，请稍候...', user:borrowData.userName, no:borrowData.carNo}">
   </modal-time>
