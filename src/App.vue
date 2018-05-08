@@ -18,7 +18,7 @@ export default {
   computed: mapState(['appBgi']),
   created() {
     this.initSysInfo()
-    this.initDepartData()
+    // this.initDepartData()
   },
   methods: mapActions(['initSysInfo', 'initDepartData']),
   components: {

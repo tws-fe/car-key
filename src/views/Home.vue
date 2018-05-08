@@ -24,7 +24,7 @@
 <script>
 import anime from 'animejs'
 import {url, fetch} from '../api'
-import {mapState, mapMutations} from 'vuex'
+import {mapState, mapMutations, mapActions} from 'vuex'
 import { message } from 'element-ui'
 const keybox = window.twsdevice.keybox
 
@@ -37,9 +37,11 @@ export default {
     } else {
       keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
     }
+    this.initDepartData()
   },
   methods: {
     ...mapMutations(['setReqData', 'setRfids', 'setBorrowData']),
+    ...mapActions(['initDepartData']),
     readOutsideRfidCallback (state, data) {
       console.log('readOutsideRfidCallback: ', state, data)
       if (state === -100) {
