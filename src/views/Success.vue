@@ -7,21 +7,24 @@
     </div>
     <img class="suceess_img" src="../assets/back/backSuccess_police.png" alt="">
     <audio ref="applySuccess">
-      <source src="/static/applySuccess.mp3" type="audio/mpeg">
+      <source :src="host+'/static/applySuccess.mp3'" type="audio/mpeg">
     </audio>
     <audio ref="backSuccess">
-      <source src="/static/backSuccess.mp3" type="audio/mpeg">
+      <source :src="host+'/static/backSuccess.mp3'" type="audio/mpeg">
     </audio>
   </div>
 </template>
 
 <script>
+import projectConf from '../../project.config'
+const host = process.env.VUE_APP_ENV === 'production'? projectConf.productionPath : ''
 export default {
   name: 'Success',
   data () {
     return {
       timedown: 3,
-      timer: null
+      timer: null,
+      host
     }
   },
   mounted () {

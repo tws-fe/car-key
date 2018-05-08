@@ -6,7 +6,7 @@
     <div class="msg back_msg_base">请将钥匙放在感应区感应，等待柜门自动打开</div>
 
     <audio  ref="backReact">
-      <source src="/static/backReact.mp3" type="audio/mpeg">
+      <source :src="host+'/static/backReact.mp3'" type="audio/mpeg">
     </audio>
 
     <modal-time v-if="preReturnPercentage>=0&&preReturnPercentage<100"
@@ -30,14 +30,18 @@ import bus from '../modules/bus'
 import {mapState, mapMutations} from 'vuex'
 import { message } from 'element-ui'
 import {url, fetch} from '../api' 
-const keybox = window.twsdevice.keybox
 import ErrorMask from '../components/ErrorMask'
 import ModalTime from '../components/ModalTime'
+import projectConf from '../../project.config'
+
+const host = process.env.VUE_APP_ENV === 'production'? projectConf.productionPath : ''
+const keybox = window.twsdevice.keybox
 
 export default {
   name: 'BackReact',
   data () {
     return {
+      host,
       preReturnPercentage: -1, //归还钥匙，盒子移动进度
       returningPercentage: -1, //规划钥匙，盒子的打开进度
       timedown: 30,

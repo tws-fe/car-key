@@ -13,7 +13,7 @@
   </div>
 
   <audio autoplay >
-    <source src="/static/backClose.mp3" type="audio/mpeg">
+    <source :src="host+'/static/backClose.mp3'" type="audio/mpeg">
   </audio>
 
   <modal-time v-if="returnedPercentage>=0&&returnedPercentage<100"
@@ -108,6 +108,8 @@ import {url, fetch} from '../api'
 import {mapState} from 'vuex'
 import { message } from 'element-ui'
 import ModalTime from '../components/ModalTime'
+import projectConf from '../../project.config'
+const host = process.env.VUE_APP_ENV === 'production'? projectConf.productionPath : ''
 const keybox = window.twsdevice.keybox
 
 export default {
@@ -117,7 +119,8 @@ export default {
       returnedPercentage: -1,
       timedown: 30,
       timer: null,
-      checking: false
+      checking: false,
+      host
     }
   },
   computed: mapState(['reqData', 'rfids', 'borrowData']),

@@ -18,7 +18,7 @@
       </modal-time> 
     </div>
     <audio autoplay >
-      <source src="/static/takeAway.mp3" type="audio/mpeg">
+      <source :src="host+'/static/takeAway.mp3'" type="audio/mpeg">
     </audio>
   </div>
 </template>
@@ -100,12 +100,15 @@ import {mapState, mapMutations} from 'vuex'
 import {url, fetch} from '../api'
 import {message} from 'element-ui'
 import ModalTime from '../components/ModalTime'
+import projectConf from '../../project.config'
+const host = process.env.VUE_APP_ENV === 'production'? projectConf.productionPath : ''
 
 const keybox = window.twsdevice.keybox
 export default {
   name: 'TakeAway',
   data () {
     return {
+      host,
       borrowedPercentage: -1,
       timedown: 60,
       timer: null,

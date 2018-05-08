@@ -47,7 +47,7 @@
     </div>
 
     <audio  ref="verifyAudio">
-      <source src="/static/verify.mp3" type="audio/mpeg">
+      <source :src="host+'/static/verify.mp3'" type="audio/mpeg">
     </audio>
 
     <modal-time v-if="preBorrowPercentage>=0&&preBorrowPercentage<100" 
@@ -72,18 +72,21 @@ import bus from '../modules/bus'
 import {mapMutations, mapState} from 'vuex'
 import Vue from 'vue'
 import { message, Progress } from 'element-ui'
-Vue.use(Progress)
 import TakeAway from './TakeAway'
 import ErrorMask from '../components/ErrorMask'
 import ModalTime from '../components/ModalTime'
+import projectConf from '../../project.config'
+const host = process.env.VUE_APP_ENV === 'production'? projectConf.productionPath : ''
 // import { fingerprint, fingerprintCallback } from '../modules/FingerprintExtension'
 const fingerprint = window.twsdevice.fingerprint
 const keybox = window.twsdevice.keybox
+Vue.use(Progress)
 
 export default {
   name: 'Verify',
   data () {
     return {
+      host,
       currentData: {}, //采集当前指纹的数据
       DBCacheObj: {}, //创建指纹库的返回值
       dbHandle: 0, //创建指纹库对应的句柄
