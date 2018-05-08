@@ -351,6 +351,7 @@ import {mapMutations, mapState} from 'vuex'
 import {url,fetch} from '../api'
 import Vue from 'vue'
 import {Select, Option, message } from 'element-ui'
+const keybox = window.twsdevice.keybox
 Vue.use(Select)
 Vue.use(Option)
 export default {
@@ -377,6 +378,7 @@ export default {
     ...mapState(['selectCar', 'reqData',])
   },
   created () { 
+    keybox.readOutsideRfidData(null, null)
     this.getLists()
 
     // 保存相应的信息
