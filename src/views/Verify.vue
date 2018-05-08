@@ -49,6 +49,9 @@
     <audio  ref="verifyAudio">
       <source :src="host+'/static/verify.mp3'" type="audio/mpeg">
     </audio>
+    <audio  ref="opening">
+      <source :src="host+'/static/opening.mp3'" type="audio/mpeg">
+    </audio>
 
     <modal-time v-if="preBorrowPercentage>=0&&preBorrowPercentage<100" 
       :data="{msg:'正在自动打开柜门，请稍候...', user:selectCar.borrowUser, no:selectCar.no}">
@@ -87,6 +90,7 @@ export default {
   data () {
     return {
       host,
+      openingPlay: false,
       currentData: {}, //采集当前指纹的数据
       DBCacheObj: {}, //创建指纹库的返回值
       dbHandle: 0, //创建指纹库对应的句柄
@@ -183,6 +187,12 @@ export default {
       } else if (state === -200) {
         message.error('盒子中的钥匙的rfid与预期不符')
       } else if (state === 100) {
+        if (!this.openingPlay) {
+          this.$refs['verifyAudio'].pause()
+          this.$refs['verifyAudio'].load()
+          this.$refs['opening'].play()
+          this.openingPlay = true
+        }
         console.log('盒子转出进度：', data)
         this.preBorrowPercentage = parseInt(data)
       }

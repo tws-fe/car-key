@@ -378,7 +378,9 @@ export default {
     ...mapState(['selectCar', 'reqData',])
   },
   created () { 
-    keybox.readOutsideRfidData(null, null)
+    if (process.env.VUE_APP_API === 'real') {
+      keybox.readOutsideRfidData(null, null)
+    }
     this.getLists()
 
     // 保存相应的信息

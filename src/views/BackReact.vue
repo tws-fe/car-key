@@ -2,11 +2,17 @@
   <div class="back">
     <img class="down" src="../assets/back/back_down.png" alt="">
     <img class="key" src="../assets/back/back_key.png" alt="">
-    <div class="timedown timedown_base">{{timedown}}秒</div>
+    <div class="timedown timedown_base" v-if="!$route.query.isRead">{{timedown}}秒</div>
     <div class="msg back_msg_base">请将钥匙放在感应区感应，等待柜门自动打开</div>
 
     <audio  ref="backReact">
       <source :src="host+'/static/backReact.mp3'" type="audio/mpeg">
+    </audio>
+    <audio ref="readRfid">
+      <source :src="host+'/static/readRfid.mp3'" type="audio/mpeg">
+    </audio>
+    <audio ref="opening">
+      <source :src="host+'/static/opening.mp3'" type="audio/mpeg">
     </audio>
 
     <modal-time v-if="preReturnPercentage>=0&&preReturnPercentage<100"
@@ -42,6 +48,7 @@ export default {
   data () {
     return {
       host,
+      openingPlay: false,
       preReturnPercentage: -1, //归还钥匙，盒子移动进度
       returningPercentage: -1, //规划钥匙，盒子的打开进度
       timedown: 30,
@@ -57,13 +64,15 @@ export default {
     if (this.$route.query.isRead) {
       this.preReturnHandler()
     } else {
+      this.timer = setInterval(this.goTime , 1000)
       console.log('调用readOutsideRfidHandler')
       this.readOutsideRfidHandler()
     }
-    this.timer = setInterval(this.goTime , 1000)
   },
   mounted () {
-    this.$refs['backReact'].play()
+    if (!this.$route.query.isRead) {
+      this.$refs['backReact'].play()
+    }
   },
   destroyed () {
     this.clearTime()
@@ -104,6 +113,9 @@ export default {
         this.clearTime()
       } 
       if (state === 100) {
+        this.$refs['backReact'].pause()
+        this.$refs['backReact'].load()
+        this.$refs['readRfid'].play()
         this.clearTime()
         message({
           message: '读取到rfid信息',
@@ -139,8 +151,9 @@ export default {
             userName: data.userName,
             carNo: data.carNo
           })
-
-          this.preReturnHandler()
+          setTimeout(() => {
+            this.preReturnHandler()
+          }, 3000)
         })
       }
     },
@@ -162,6 +175,10 @@ export default {
       } else if (state === -100) {
         message.error('盒子中有钥匙，不能归还')
       } else if (state === 100) {
+        if (!this.openingPlay) {
+          this.$refs['opening'].play()
+          this.openingPlay = true
+        }
         console.log('preReturn-state: ', state, ' data: ', data)
         this.preReturnPercentage = parseInt(data)
       }

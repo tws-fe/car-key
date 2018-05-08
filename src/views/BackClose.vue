@@ -1,6 +1,6 @@
 <template>
 <div class="main_key_container">
-  <div class="main_key">
+  <div class="main_key" v-show="!checking">
     <img class="down" src="../assets/key/arrow.png">
       <div class="cupBoard">
           <img style="width:100%;" src="../assets/key/openbox.gif">
@@ -15,12 +15,19 @@
   <audio autoplay >
     <source :src="host+'/static/backClose.mp3'" type="audio/mpeg">
   </audio>
+  <audio ref="backCheck" >
+    <source :src="host+'/static/backCheck.mp3'" type="audio/mpeg">
+  </audio>
+  <audio ref="backClosing">
+      <source :src="host+'/static/backClosing.mp3'" type="audio/mpeg">
+    </audio>
 
   <modal-time v-if="returnedPercentage>=0&&returnedPercentage<100"
       :data="{msg:'正在自动关闭盒子，请稍候...', user:borrowData.userName, no:borrowData.carNo}">
   </modal-time>
-  <modal-time v-if="checking" :data="{recording:true}"> 
-  </modal-time>
+  <!-- <modal-time v-if="checking" :data="{recording:true}"> 
+  </modal-time> -->
+  <back-check v-show="checking"></back-check>
 </div>
 </template>
 <style>
@@ -107,6 +114,7 @@ import bus from '../modules/bus'
 import {url, fetch} from '../api'
 import {mapState} from 'vuex'
 import { message } from 'element-ui'
+import BackCheck from './BackCheck.vue'
 import ModalTime from '../components/ModalTime'
 import projectConf from '../../project.config'
 const host = process.env.VUE_APP_ENV === 'production'? projectConf.productionPath : ''
@@ -116,10 +124,12 @@ export default {
   name: 'BackClose',
   data () {
     return {
+      closingPlay: false,
       returnedPercentage: -1,
-      timedown: 30,
+      timedown: 12,
       timer: null,
       checking: false,
+      checkingStart: '',
       host
     }
   },
@@ -145,7 +155,7 @@ export default {
         }
         setTimeout(() => {
           this.returnedHandler()
-        }, 1000)
+        }, 3000)
       }
     })
 
@@ -172,6 +182,10 @@ export default {
       } else if (state === -400) {
         message.error('盒子中有未知的rfid卡片')
       } else if (state === 100) {
+        if (!this.closingPlay) {
+          this.$refs['backClosing'].play()
+          this.closingPlay = true
+        }
         console.log('returned: ', data)
         if (this.timer) {
           clearInterval(this.timer)
@@ -180,18 +194,21 @@ export default {
         this.returnedPercentage = parseInt(data)
       } else if (state === 200) {
         console.log('钥匙归还成功')
-        // 检测弹框关闭
-        fetch(url.borrowAndReback, this.reqData).then(res => {
-          this.checking = false
-          this.$router.push({
-            path: '/success',
-            query: {
-              user: this.borrowData.userName,
-              no: this.borrowData.carNo,
-              isBorrow: false
-            }  
+        let seconds = (new Date() - this.checkingStart)
+        let time = seconds > 0 ? 5000 - seconds : 0
+        setTimeout(() => {
+          fetch(url.borrowAndReback, this.reqData).then(res => {
+            this.checking = false
+            this.$router.push({
+              path: '/success',
+              query: {
+                user: this.borrowData.userName,
+                no: this.borrowData.carNo,
+                isBorrow: false
+              }  
+            })
           })
-        })
+        }, time)
       }
     }
   },
@@ -199,11 +216,16 @@ export default {
     returnedPercentage (val) {
       if (val === 100) {
         this.checking = true
+        this.checkingStart = new Date()
+        this.$refs['backClosing'].pause()
+        this.$refs['backClosing'].load()
+        this.$refs['backCheck'].play()
       }
     }
   },
   components: {
-    ModalTime
+    ModalTime,
+    BackCheck
   }
 }
 </script>

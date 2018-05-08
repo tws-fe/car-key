@@ -18,6 +18,9 @@
         <img class="movedown" src="../assets/home/return-arrow.png" alt="">
       </div>
     </div>
+    <audio ref="readRfid">
+      <source :src="host+'/static/readRfid.mp3'" type="audio/mpeg">
+    </audio>
   </div>
 </template>
 
@@ -26,10 +29,17 @@ import anime from 'animejs'
 import {url, fetch} from '../api'
 import {mapState, mapMutations, mapActions} from 'vuex'
 import { message } from 'element-ui'
+import projectConf from '../../project.config'
+const host = process.env.VUE_APP_ENV === 'production'? projectConf.productionPath : ''
 const keybox = window.twsdevice.keybox
 
 export default {
   name: 'home',
+  data () {
+    return {
+      host
+    }
+  },
   computed: mapState(['reqData', 'rfids']),
   created () {
     if (!sessionStorage.getItem('keyboxOpen')) {
@@ -48,6 +58,7 @@ export default {
 
       } 
       if (state === 100) {
+        this.$refs['readRfid'].play()
 
         // 硬件js返回的data是string：'["AABBCCDDEEFFDD1122","sdf"]' ==> 'AABBCCDDEEFFDD1122,sdf'
         let rfids = data.slice(1, data.length-1).replace(/"/g,'')
@@ -76,8 +87,10 @@ export default {
             userName: data.userName,
             carNo: data.carNo
           })
-                    
-          this.$router.push({name: 'backReact', query:{isRead: true}})
+
+          setTimeout(() => {
+            this.$router.push({name: 'backReact', query:{isRead: true}})
+          }, 3000)          
         })
       }
     },
