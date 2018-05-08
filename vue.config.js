@@ -1,6 +1,12 @@
+let projectConf = require('./project.config')
 // const fs = require('fs')
 
-// module.exports = {
+module.exports = {
+  configureWebpack: {
+    output: {
+      publicPath: process.env.VUE_APP_ENV === 'production'? projectConf.productionPath : '/'
+    },
+  }
   // lintOnSave: true,
   // dll: true,
   // devServer: {
@@ -19,5 +25,5 @@
   //     }
   //   }
   // },
-  // configureWebpack: {}
-// }
+  
+}

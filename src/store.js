@@ -2,8 +2,9 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import {url,fetch} from './api'
 import { Footer } from 'element-ui';
-
+import projectConf from '../project.config'
 Vue.use(Vuex)
+const host = process.env.VUE_APP_ENV === 'production'? projectConf.productionPath : ''
 
 export default new Vuex.Store({
   state: {
@@ -30,7 +31,7 @@ export default new Vuex.Store({
       bhours: ''
     },
     rfids: '',
-    appBgi: '/static/sy-bj.png',
+    appBgi: host + '/static/sy-bj.png',
     borrowData: {
       userName: '',
       carNo: ''
@@ -55,7 +56,7 @@ export default new Vuex.Store({
       state.departData = data
     },
     setAppBgi (state, imgUrl) {
-      state.appBgi = imgUrl
+      state.appBgi = host + imgUrl
     },
     setSelectCar (state, carInfo) {
       state.selectCar = carInfo

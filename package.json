@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "cross-env VUE_APP_API=mock vue-cli-service serve --open",
     "serve-real": "cross-env VUE_APP_API=real vue-cli-service serve --open",
-    "build": "cross-env VUE_APP_API=real vue-cli-service build"
+    "build": "cross-env VUE_APP_API=real VUE_APP_ENV=production vue-cli-service build"
   },
   "dependencies": {
     "animejs": "^2.2.0",
