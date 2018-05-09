@@ -19,8 +19,8 @@
     <source :src="host+'/static/backCheck.mp3'" type="audio/mpeg">
   </audio>
   <audio ref="backClosing">
-      <source :src="host+'/static/backClosing.mp3'" type="audio/mpeg">
-    </audio>
+    <source :src="host+'/static/backClosing.mp3'" type="audio/mpeg">
+  </audio>
 
   <modal-time v-if="returnedPercentage>=0&&returnedPercentage<100"
       :data="{msg:'正在自动关闭盒子，请稍候...', user:borrowData.userName, no:borrowData.carNo}">
@@ -46,7 +46,6 @@ export default {
   name: 'BackClose',
   data () {
     return {
-      closingPlay: false,
       returnedPercentage: -1,
       timedown: 12,
       timer: null,
@@ -65,7 +64,11 @@ export default {
           clearInterval(this.timer)
           this.timer = null
         }
-        this.returnedHandler()
+        this.$refs['backClosing'].play()
+        // 延迟2秒关盒子
+        setTimeout(() => {
+          this.returnedHandler()
+        }, 6000)
       }
     }, 1000)
 
@@ -75,9 +78,14 @@ export default {
           clearInterval(this.timer)
           this.timer = null
         }
+        // 提示钥匙放入盒子的延迟
         setTimeout(() => {
-          this.returnedHandler()
-        }, 3000)
+          this.$refs['backClosing'].play()
+          // 延迟2秒关盒子
+          setTimeout(() => {
+            this.returnedHandler()
+          }, 6000)
+        }, 4000)
       }
     })
 
@@ -114,10 +122,6 @@ export default {
         console.log('盒子中有未知的rfid卡片', state, data)
         bus.$emit('checkError', state)
       } else if (state === 100) {
-        if (!this.closingPlay) {
-          this.$refs['backClosing'].play()
-          this.closingPlay = true
-        }
         console.log('returned: ', data)
         if (this.timer) {
           clearInterval(this.timer)

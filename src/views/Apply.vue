@@ -409,7 +409,8 @@ export default {
     getLists () {
       fetch(url.borrowReason).then(res => {
         this.options = res.data.data
-        this.value = this.options.remark
+        // 默认选择第一个
+        this.value = this.options[0].remark
       })
     },
     fo(obj){
