@@ -9,15 +9,15 @@ module.exports = {
   },
   // lintOnSave: true,
   // dll: true,
-  devServer: {
-    port: 8088,
-    proxy: {
-      '/': {
-        target: 'http://192.168.5.67:8082',
-        changeOrigin: true
-      }
-    }
-  },
+  // devServer: {
+  //   port: 8088,
+  //   proxy: {
+  //     '/': {
+  //       target: 'http://192.168.5.67:8082',
+  //       changeOrigin: true
+  //     }
+  //   }
+  // },
   // css: {
   //   loaderOptions: {
   //     sass: {

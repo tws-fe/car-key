@@ -110,7 +110,7 @@ export default {
     return {
       host,
       borrowedPercentage: -1,
-      timedown: 60,
+      timedown: 12,
       timer: null,
       checking: false
     }

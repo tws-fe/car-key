@@ -43,7 +43,8 @@ import ErrorMask from '../components/ErrorMask'
 let msgArr = [
   ['钥匙扫描验证&nbsp;(&nbsp;第一次&nbsp;)&nbsp;不成功，', '三次失败后请通知管理员'],
   ['钥匙扫描验证&nbsp;(&nbsp;第二次&nbsp;)&nbsp;不成功，', '三次失败后请通知管理员'],
-  ['钥匙扫描验证&nbsp;(&nbsp;第三次&nbsp;)&nbsp;不成功，', '请通知管理员提交问题'],
+  // ['钥匙扫描验证&nbsp;(&nbsp;第三次&nbsp;)&nbsp;不成功，', '请通知管理员提交问题'],
+  ['钥匙扫描验证不成功，', '请通知管理员提交问题'],
   ['提交问题成功，点击按钮返回首页', '']
 ]
 export default {
@@ -58,12 +59,14 @@ export default {
   },
   created () {
     bus.$on('checkError', (state) => {
-      this.msgIndex++
       this.showMask = true
-      this.$nextTick(() => {
-        this.$refs['checkScan'].style.animationPlayState = 'paused'
-        this.$refs['scrollText'].style.animationPlayState = 'paused'
-      })
+      // 05.09：硬件逻辑异常，先简化处理
+      this.msgIndex = 2
+      // this.msgIndex++
+      // this.$nextTick(() => {
+      //   this.$refs['checkScan'].style.animationPlayState = 'paused'
+      //   this.$refs['scrollText'].style.animationPlayState = 'paused'
+      // })
     })
 
     this.timer = setInterval(() => {
@@ -99,10 +102,10 @@ export default {
   methods: {
     reScan () {
       this.showMask = false
-      this.$nextTick(()=> {
-        this.$refs['checkScan'].style.animationPlayState = 'running'
-        this.$refs['scrollText'].style.animationPlayState = 'running'
-      })
+      // this.$nextTick(()=> {
+      //   this.$refs['checkScan'].style.animationPlayState = 'running'
+      //   this.$refs['scrollText'].style.animationPlayState = 'running'
+      // })
     },
     suggest () {
       this.msgIndex = 3
