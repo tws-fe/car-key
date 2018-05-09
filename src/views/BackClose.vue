@@ -90,23 +90,28 @@ export default {
   },
   methods: {
     returnedHandler () {
-      console.log('调用keybox.returned')
+      console.log('调用keybox.returned, ',this.reqData.boxNo, this.rfids)
       //钥匙归还，关闭盒子 
       keybox.returned(this.reqData.boxNo, this.rfids, window, this.returnedCallback)
     },
     returnedCallback (state, data) {
       if (state === -1) {
-        message.error('盒子正在执行其他操作，不能执行本次指令')
+        // message.error('盒子正在执行其他操作，不能执行本次指令')
+        console.log('盒子正在执行其他操作，不能执行本次指令', state, data)
       } else if (state === -100) {
-        message.error('盒子没有打开')
+        // message.error('盒子没有打开')
+        console.log('盒子没有打开', state, data)
       } else if (state === -200) {
         // message.error('盒子中没有钥匙')
+        console.log('盒子中没有钥匙', state, data)
         bus.$emit('checkError', state)
       } else if (state === -300) {
         // message.error('盒子中有钥匙，但rfid不符合预期')
+        console.log('盒子中有钥匙，但rfid不符合预期', state, data)
         bus.$emit('checkError', state)
       } else if (state === -400) {
         // message.error('盒子中有未知的rfid卡片')
+        console.log('盒子中有未知的rfid卡片', state, data)
         bus.$emit('checkError', state)
       } else if (state === 100) {
         if (!this.closingPlay) {
@@ -120,11 +125,12 @@ export default {
         }
         this.returnedPercentage = parseInt(data)
       } else if (state === 200) {
-        console.log('钥匙归还成功')
+        // console.log('钥匙归还成功')
         let seconds = (new Date() - this.checkingStart)
         let time = seconds > 0 ? 5000 - seconds : 0
         setTimeout(() => {
           fetch(url.borrowAndReback, this.reqData).then(res => {
+            console.log('钥匙归还成功')
             this.checking = false
             this.$router.push({
               path: '/success',

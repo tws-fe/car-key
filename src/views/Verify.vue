@@ -146,9 +146,9 @@ export default {
     },
     fingerprintCallback(state, data) {
       if (state == 10) {
-        console.log('设备打开成功');
+        console.log('设备打开成功', state, data);
       }else if(state == 11){
-        console.log('设备已打开，无需重复的打开');
+        console.log('设备已打开，无需重复的打开', state, data);
       }else if (state == 20) {
         // message({
         //   message: '采集到一枚指纹',
@@ -183,11 +183,14 @@ export default {
     preBorrowCallback (state, data) {
       let that = this
       if (state === -1) {
-        message.error('盒子正在执行其他操作，不能执行本次指令')
+        // message.error('盒子正在执行其他操作，不能执行本次指令')
+        console.log('盒子正在执行其他操作，不能执行本次指令', state, data)
       } else if (state === -100) {
-        message.error('盒子中钥匙不存在')
+        // message.error('盒子中钥匙不存在')
+        console.log('盒子中钥匙不存在', state, data)
       } else if (state === -200) {
-        message.error('盒子中的钥匙的rfid与预期不符')
+        // message.error('盒子中的钥匙的rfid与预期不符')
+        console.log('盒子中的钥匙的rfid与预期不符', state, data)
       } else if (state === 100) {
         if (!this.openingPlay) {
           this.$refs['verifyAudio'].pause()
@@ -201,6 +204,7 @@ export default {
     },
     borrowingHandler () {
       //立即打开出口的盒柜并领取钥匙，调用本方法前必须成功执行preBorrowKey
+      console.log('keybox.borrowing',this.reqData.boxNo, this.rfids)
       keybox.borrowing(this.reqData.boxNo, this.rfids, window, this.borrowingCallback)
     },
     borrowingCallback (state, data) {

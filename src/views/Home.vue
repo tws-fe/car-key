@@ -125,24 +125,30 @@ export default {
         keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
         sessionStorage.setItem('keyboxOpen', state)
       } else if (state == 11){
-        message('设备已打开，无需重复的打开')
+        // message('设备已打开，无需重复的打开')
+        console.log('设备已打开，无需重复的打开', state, data)
         // console.log('调用keybox.readOutsideRfidData', window, this.readOutsideRfidCallback)
         keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
         sessionStorage.setItem('keyboxOpen', state)
       } else if (state == 30) {
-        message('设备已关闭')
+        // message('设备已关闭')
+        console.log('设备已关闭', state, data)
         sessionStorage.removeItem('keyboxOpen')
       } else if (state == -10){
-        message('设备打开失败，失败信息：'+data+'')
+        // message('设备打开失败，失败信息：'+data+'')
+        console.log('设备打开失败，失败信息：'+data)
         sessionStorage.removeItem('keyboxOpen')        
       } else if (state == -30){
-        message('设备已关闭，不能重复关闭')
+        // message('设备已关闭，不能重复关闭')
+        console.log('设备已关闭，不能重复关闭', state, data)
         sessionStorage.removeItem('keyboxOpen')        
       } else if (state == -100){
-        message('设备已崩溃，不能正常使用')
+        // message('设备已崩溃，不能正常使用')
+        console.log('设备已崩溃，不能正常使用', state, data)
         sessionStorage.removeItem('keyboxOpen')        
       } else {
-        message('设备出现异常，错误码：'+state+', 错误信息：'+data+'')
+        // message('设备出现异常，错误码：'+state+', 错误信息：'+data+'')
+        console.log('设备出现异常，错误码：'+state+', 错误信息：'+data+'')
         sessionStorage.removeItem('keyboxOpen')        
       }
     }

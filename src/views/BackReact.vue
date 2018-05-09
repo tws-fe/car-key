@@ -112,6 +112,7 @@ export default {
           this.$router.push('/home')
         }
         // message.error('连接rfid失败')
+        console.log('连接rfid失败', state, data)
         this.showMask = true
         this.clearTime()
       } 
@@ -176,15 +177,17 @@ export default {
         keybox.readOutsideRfidData(null, null)
       }
       setTimeout(() => {
-        console.log('调用keybox.preReturn')
+        console.log('调用keybox.preReturn, ',this.reqData.boxNo, this.rfids)
         keybox.preReturn(this.reqData.boxNo, this.rfids, window, this.preReturnCallback)
       }, 100)
     },
     preReturnCallback (state, data) {
       if (state === -1) {
-        message.error('盒子正在执行其他操作，不能执行本次指令')
+        // message.error('盒子正在执行其他操作，不能执行本次指令')
+        console.log('盒子正在执行其他操作，不能执行本次指令', state, data)
       } else if (state === -100) {
-        message.error('盒子中有钥匙，不能归还')
+        // message.error('盒子中有钥匙，不能归还')
+        console.log('盒子中有钥匙，不能归还', state, data)
       } else if (state === 100) {
         if (!this.openingPlay) {
           this.$refs['opening'].play()
@@ -195,17 +198,20 @@ export default {
       }
     },
     returningHandler () {
-      console.log('调用keybox.returning')
+      console.log('调用keybox.returning:',this.reqData.boxNo, this.rfids)
       //归还钥匙,打开出口的盒子
       keybox.returning(this.reqData.boxNo, this.rfids, window, this.returningCallback)
     },
     returningCallback (state, data) {
       if (state === -1) {
-        message.error('盒子正在执行其他操作，不能执行本次指令')
+        // message.error('盒子正在执行其他操作，不能执行本次指令')
+        console.log('盒子正在执行其他操作，不能执行本次指令', state, data)
       } if (state === -2) {
-        message.error('盒子不在出口位置，不能执行')
+        // message.error('盒子不在出口位置，不能执行')
+        console.log('盒子不在出口位置，不能执行', state, data)
       } else if (state === -100) {
-        message.error('盒子中有钥匙，不能归还')
+        // message.error('盒子中有钥匙，不能归还')
+        console.log('盒子中有钥匙，不能归还', state, data)
       } else if (state === 100) {
         this.returningPercentage = parseInt(data)
         console.log('returning-state: ', state, ' data: ', data)
@@ -223,24 +229,30 @@ export default {
         keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
         sessionStorage.setItem('keyboxOpen', state)
       } else if (state == 11){
-        message('设备已打开，无需重复的打开')
+        // message('设备已打开，无需重复的打开')
+        console.log('设备已打开，无需重复的打开')
         // console.log('调用keybox.readOutsideRfidData', window, this.readOutsideRfidCallback)
         keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
         sessionStorage.setItem('keyboxOpen', state)
       } else if (state == 30) {
-        message('设备已关闭')
+        // message('设备已关闭')
+        console.log('设备已关闭')
         sessionStorage.removeItem('keyboxOpen')
       } else if (state == -10){
-        message('设备打开失败，失败信息：'+data+'')
+        // message('设备打开失败，失败信息：'+data+'')
+        console.log('设备打开失败，失败信息：', state, data)
         sessionStorage.removeItem('keyboxOpen')        
       } else if (state == -30){
-        message('设备已关闭，不能重复关闭')
+        // message('设备已关闭，不能重复关闭')
+        console.log('设备已关闭，不能重复关闭', state, data)
         sessionStorage.removeItem('keyboxOpen')        
       } else if (state == -100){
-        message('设备已崩溃，不能正常使用')
+        // message('设备已崩溃，不能正常使用')
+        console.log('设备已崩溃，不能正常使用', state, data)
         sessionStorage.removeItem('keyboxOpen')        
       } else {
-        message('设备出现异常，错误码：'+state+', 错误信息：'+data+'')
+        // message('设备出现异常，错误码：'+state+', 错误信息：'+data+'')
+        console.log('设备出现异常，错误码：'+state+', 错误信息：'+data+'')
         sessionStorage.removeItem('keyboxOpen')        
       }
     }

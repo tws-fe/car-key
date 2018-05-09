@@ -153,20 +153,26 @@ export default {
     ...mapMutations(['setReqData']),
     borrowedHandler (msg) {
       console.log('调用 keybox.borrowed--', msg)
+      console.log('keybox.borrowed',this.reqData.boxNo, this.rfids)
       //领用完毕，立即关闭盒柜，调用本方法前必须成功执行borrowing
       keybox.borrowed(this.reqData.boxNo, this.rfids, window, this.borrowedCallback)
     },
     borrowedCallback (state, data) {
       if (state === -1) {
-        message.error('盒子正在执行其他操作，不能执行本次指令')
+        // message.error('盒子正在执行其他操作，不能执行本次指令')
+        console.log('盒子正在执行其他操作，不能执行本次指令',state,data)
       } else if (state === -100) {
-        message.error('盒子没有打开')
+        // message.error('盒子没有打开')
+         console.log('盒子没有打开',state,data)
       } else if (state === -200) {
-        message.error('钥匙没有领走')
+        // message.error('钥匙没有领走')
+         console.log('钥匙没有领走',state,data)
       } else if (state === -300) {
-        message.error('盒子中有钥匙，但盒子中的钥匙的rfid与预期不符')
+        // message.error('盒子中有钥匙，但盒子中的钥匙的rfid与预期不符')
+         console.log('盒子中有钥匙，但盒子中的钥匙的rfid与预期不符',state,data)
       } else if (state === -400) {
-        message.error('盒子中有未知的rfid卡片')
+        // message.error('盒子中有未知的rfid卡片')
+         console.log('盒子中有未知的rfid卡片',state,data)
       } else if (state === 100) {
         this.borrowedPercentage = parseInt(data)
         console.log('盒子关闭进度：', data)
