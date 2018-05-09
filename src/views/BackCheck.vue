@@ -13,7 +13,7 @@
       <div v-if="msgIndex===3" class="tohome error_btn" @click="tohome"></div>
     </error-mask>
     <div class="ScrollText">
-          <div class="ScrollText_main">
+          <div class="ScrollText_main" ref="scrollText">
                  <div style="text-align:right;font-size:24px;color:#fff">钥匙自动核实中</div>
                  <div style="margin-top:42px">
                    <span style="font-size:30px;margin-left:230px;color:#fff">正在进行扫描</span>
@@ -60,6 +60,8 @@ export default {
     bus.$on('checkError', (state) => {
       this.msgIndex++
       this.showMask = true
+      this.$refs['checkScan'].style.animationPlayState = 'paused'
+      this.$refs['scrollText'].style.animationPlayState = 'paused'
     })
 
     this.timer = setInterval(() => {
@@ -95,12 +97,14 @@ export default {
   methods: {
     reScan () {
       this.showMask = false
+      this.$refs['checkScan'].style.animationPlayState = 'running'
+      this.$refs['scrollText'].style.animationPlayState = 'running'
     },
     suggest () {
       this.msgIndex = 3
     },
     tohome () {
-      this.$router.push('home')
+      this.$router.push('/home')
     }
   },
   components: {
