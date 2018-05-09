@@ -89,6 +89,7 @@ export default {
   name: 'Verify',
   data () {
     return {
+      uerCachArr: [], //指纹数据结构修改后，用来存放指纹对应的用户数据
       host,
       openingPlay: false,
       currentData: {}, //采集当前指纹的数据
@@ -170,6 +171,7 @@ export default {
           // 获取指纹库记录数据
           let icount = fingerprint.DBCacheCount(this.dbHandle)
           fingerprint.DBCacheAdd(this.dbHandle, icount+1, list.template)
+          this.uerCachArr.push(item)
         })
       })
     },
@@ -228,11 +230,11 @@ export default {
       if (ret.status === 1) {
         // 设置用户id
         this.setReqData({
-          userId: this.fingerInfo[ret.fid-1].id
+          userId: this.uerCachArr[ret.fid-1].id
         })
         // 设置借用人姓名
         this.setSelectCar(Object.assign({},this.selectCar,{
-          borrowUser: this.fingerInfo[ret.fid-1].name
+          borrowUser: this.uerCachArr[ret.fid-1].name
         }))
 
         if (this.timer) {
