@@ -226,26 +226,26 @@ export default {
         // message('设备打开成功')
         console.log('设备打开成功')
         // console.log('调用keybox.readOutsideRfidData', window, this.readOutsideRfidCallback)
-        keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
-        sessionStorage.setItem('keyboxOpen', state)
-        // 05.09: 进入归还钥匙页面，有时rfid读取不成功，进行异步处理(先关闭再开启)后，测试就正常了，目前硬件端来处理这个问题
-        // keybox.readOutsideRfidData(null, null)
-        // setTimeout(() => {
-        //   keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
-        //   sessionStorage.setItem('keyboxOpen', state)
-        // }, 200)
+        // keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
+        // sessionStorage.setItem('keyboxOpen', state)
+        // 05.09: 进入归还钥匙页面，有时rfid读取不成功，进行异步处理(先关闭再开启)后，测试就正常了，目前硬件端未处理这个问题
+        keybox.readOutsideRfidData(null, null)
+        setTimeout(() => {
+          keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
+          sessionStorage.setItem('keyboxOpen', state)
+        }, 200)
       } else if (state == 11){
         // message('设备已打开，无需重复的打开')
         console.log('设备已打开，无需重复的打开')
         // console.log('调用keybox.readOutsideRfidData', window, this.readOutsideRfidCallback)
-        keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
-        sessionStorage.setItem('keyboxOpen', state)
-        // 05.09: 进入归还钥匙页面，有时rfid读取不成功，进行异步处理(先关闭再开启)后，测试就正常了，目前硬件端来处理这个问题
-        // keybox.readOutsideRfidData(null, null)
-        // setTimeout(() => {
-        //   keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
-        //   sessionStorage.setItem('keyboxOpen', state)
-        // }, 200)
+        // keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
+        // sessionStorage.setItem('keyboxOpen', state)
+        // 05.09: 进入归还钥匙页面，有时rfid读取不成功，进行异步处理(先关闭再开启)后，测试就正常了，目前硬件端未处理这个问题
+        keybox.readOutsideRfidData(null, null)
+        setTimeout(() => {
+          keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
+          sessionStorage.setItem('keyboxOpen', state)
+        }, 200)
       } else if (state == 30) {
         // message('设备已关闭')
         console.log('设备已关闭')
