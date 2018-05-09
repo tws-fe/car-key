@@ -48,6 +48,7 @@ export default {
   data () {
     return {
       host,
+      keyByChipsLoading: false,
       openingPlay: false,
       preReturnPercentage: -1, //归还钥匙，盒子移动进度
       returningPercentage: -1, //规划钥匙，盒子的打开进度
@@ -102,33 +103,38 @@ export default {
       keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
     },
     readOutsideRfidCallback (state, data) {
+      console.log('readOutsideRfidCallback: ', state)
       if (state === -100) {
         this.errorCount++
         if (this.errorCount === 2) {
           this.clearTime()
           this.$router.push('/home')
         }
-        message.error('连接rfid失败')
+        // message.error('连接rfid失败')
         this.showMask = true
         this.clearTime()
       } 
       if (state === 100) {
+        // 函数节流
+        if (this.keyByChipsLoading) return
+        this.keyByChipsLoading = true
+
         this.$refs['backReact'].pause()
         this.$refs['backReact'].load()
         this.$refs['readRfid'].play()
         this.clearTime()
-        message({
-          message: '读取到rfid信息',
-          type: 'success',
-          duration: 2000
-        })
+        // message({
+        //   message: '读取到rfid信息',
+        //   type: 'success',
+        //   duration: 2000
+        // })
         // 硬件js返回的data是string：'["AABBCCDDEEFFDD1122","sdf"]' ==> 'AABBCCDDEEFFDD1122,sdf'
         let rfids = data.slice(1, data.length-1).replace(/"/g,'')
         fetch(url.keyByChips, {
           deviceId: this.reqData.deviceId,
           chips: rfids
-        }).then(res => {
-          message.close()
+        }).then(res => {         
+          // message.close()
 
           let data = res.data.data
           this.setReqData({
@@ -154,6 +160,8 @@ export default {
           setTimeout(() => {
             this.preReturnHandler()
           }, 3000)
+        }).catch(err => {
+          this.keyByChipsLoading = false
         })
       }
     },
@@ -162,6 +170,8 @@ export default {
       console.log('调用keybox.readOutsideRfidData, 参数：null,null' )
       // 模拟调试时屏蔽，上线时需要打开，用env变量来判断处理
       if (process.env.VUE_APP_API === 'real') {
+        this.keyByChipsLoading = false
+        // 调用preReturn方法需要把readOutsideRfidData方法关闭
         keybox.readOutsideRfidData(null, null)
       }
       setTimeout(() => {

@@ -60,8 +60,10 @@ export default {
     bus.$on('checkError', (state) => {
       this.msgIndex++
       this.showMask = true
-      this.$refs['checkScan'].style.animationPlayState = 'paused'
-      this.$refs['scrollText'].style.animationPlayState = 'paused'
+      this.$nextTick(() => {
+        this.$refs['checkScan'].style.animationPlayState = 'paused'
+        this.$refs['scrollText'].style.animationPlayState = 'paused'
+      })
     })
 
     this.timer = setInterval(() => {
@@ -97,8 +99,10 @@ export default {
   methods: {
     reScan () {
       this.showMask = false
-      this.$refs['checkScan'].style.animationPlayState = 'running'
-      this.$refs['scrollText'].style.animationPlayState = 'running'
+      this.$nextTick(()=> {
+        this.$refs['checkScan'].style.animationPlayState = 'running'
+        this.$refs['scrollText'].style.animationPlayState = 'running'
+      })
     },
     suggest () {
       this.msgIndex = 3

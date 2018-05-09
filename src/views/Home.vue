@@ -37,7 +37,8 @@ export default {
   name: 'home',
   data () {
     return {
-      host
+      host,
+      keyByChipsLoading: false
     }
   },
   computed: mapState(['reqData', 'rfids']),
@@ -58,6 +59,10 @@ export default {
 
       } 
       if (state === 100) {
+        // 函数节流
+        if (this.keyByChipsLoading) return
+        this.keyByChipsLoading = true
+
         this.$refs['readRfid'].play()
 
         // 硬件js返回的data是string：'["AABBCCDDEEFFDD1122","sdf"]' ==> 'AABBCCDDEEFFDD1122,sdf'
@@ -66,6 +71,7 @@ export default {
           deviceId: this.reqData.deviceId,
           chips: rfids
         }).then(res => {
+          
           let data = res.data.data
           this.setReqData({
             isStatus: 2,
@@ -89,8 +95,11 @@ export default {
           })
 
           setTimeout(() => {
+            this.keyByChipsLoading = false
             this.$router.push({name: 'backReact', query:{isRead: true}})
           }, 3000)          
+        }).catch(err => {
+          this.keyByChipsLoading = false
         })
       }
     },
