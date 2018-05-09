@@ -160,6 +160,7 @@ export default {
             carNo: data.carNo
           })
           setTimeout(() => {
+            this.keyByChipsLoading = false
             this.preReturnHandler()
           }, 3000)
         }).catch(err => {
@@ -171,7 +172,6 @@ export default {
       //归还钥匙的预处理，此指令会让转盘把指定的盒柜转到出口位置
       // 模拟调试时屏蔽，上线时需要打开，用env变量来判断处理
       if (process.env.VUE_APP_API === 'real') {
-        this.keyByChipsLoading = false
         console.log('调用keybox.readOutsideRfidData, 参数：null,null' )
         // 调用preReturn方法需要把readOutsideRfidData方法关闭
         keybox.readOutsideRfidData(null, null)
@@ -179,7 +179,7 @@ export default {
       setTimeout(() => {
         console.log('调用keybox.preReturn, ',this.reqData.boxNo, this.rfids)
         keybox.preReturn(this.reqData.boxNo, this.rfids, window, this.preReturnCallback)
-      }, 100)
+      }, 200)
     },
     preReturnCallback (state, data) {
       if (state === -1) {
