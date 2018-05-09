@@ -179,7 +179,7 @@ export default {
       setTimeout(() => {
         console.log('调用keybox.preReturn, ',this.reqData.boxNo, this.rfids)
         keybox.preReturn(this.reqData.boxNo, this.rfids, window, this.preReturnCallback)
-      }, 200)
+      }, 400)
     },
     preReturnCallback (state, data) {
       if (state === -1) {
