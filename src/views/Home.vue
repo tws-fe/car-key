@@ -46,7 +46,8 @@ export default {
     if (!sessionStorage.getItem('keyboxOpen')) {
       keybox.open(window, this.openCallback)
     } else {
-      keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
+      // 05.09首页的读芯片功能先屏蔽
+      // keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
     }
     this.initDepartData()
   },
@@ -122,13 +123,15 @@ export default {
         message('设备打开成功')
         // console.log('设备打开成功')
         // console.log('调用keybox.readOutsideRfidData', window, this.readOutsideRfidCallback)
-        keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
+        // 05.09首页的读芯片功能先屏蔽
+        // keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
         sessionStorage.setItem('keyboxOpen', state)
       } else if (state == 11){
         // message('设备已打开，无需重复的打开')
         console.log('设备已打开，无需重复的打开', state, data)
         // console.log('调用keybox.readOutsideRfidData', window, this.readOutsideRfidCallback)
-        keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
+        // 05.09首页的读芯片功能先屏蔽
+        // keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
         sessionStorage.setItem('keyboxOpen', state)
       } else if (state == 30) {
         // message('设备已关闭')
