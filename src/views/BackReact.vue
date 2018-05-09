@@ -226,14 +226,20 @@ export default {
         // message('设备打开成功')
         console.log('设备打开成功')
         // console.log('调用keybox.readOutsideRfidData', window, this.readOutsideRfidCallback)
-        keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
-        sessionStorage.setItem('keyboxOpen', state)
+        keybox.readOutsideRfidData(null, null)
+        setTimeout(() => {
+          keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
+          sessionStorage.setItem('keyboxOpen', state)
+        }, 200)
       } else if (state == 11){
         // message('设备已打开，无需重复的打开')
         console.log('设备已打开，无需重复的打开')
         // console.log('调用keybox.readOutsideRfidData', window, this.readOutsideRfidCallback)
-        keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
-        sessionStorage.setItem('keyboxOpen', state)
+        keybox.readOutsideRfidData(null, null)
+        setTimeout(() => {
+          keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
+          sessionStorage.setItem('keyboxOpen', state)
+        }, 200)
       } else if (state == 30) {
         // message('设备已关闭')
         console.log('设备已关闭')
