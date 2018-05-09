@@ -117,9 +117,10 @@ export default {
       })
     },
     openCallback (state, data) {
-      console.log('open')
+      // console.log('open')
       if (state == 10) {
         message('设备打开成功')
+        // console.log('设备打开成功')
         // console.log('调用keybox.readOutsideRfidData', window, this.readOutsideRfidCallback)
         keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
         sessionStorage.setItem('keyboxOpen', state)

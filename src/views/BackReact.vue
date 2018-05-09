@@ -67,7 +67,8 @@ export default {
     } else {
       this.timer = setInterval(this.goTime , 1000)
       console.log('调用readOutsideRfidHandler')
-      this.readOutsideRfidHandler()
+      keybox.open(window, this.openCallback)
+      // this.readOutsideRfidHandler()
     }
   },
   mounted () {
@@ -211,6 +212,36 @@ export default {
       } else if (state === 200) { //检测到钥匙已放入
         console.log('returning-state: ', state)
         bus.$emit('returningState', state)
+      }
+    },
+    openCallback (state, data) {
+      // console.log('open')
+      if (state == 10) {
+        // message('设备打开成功')
+        console.log('设备打开成功')
+        // console.log('调用keybox.readOutsideRfidData', window, this.readOutsideRfidCallback)
+        keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
+        sessionStorage.setItem('keyboxOpen', state)
+      } else if (state == 11){
+        message('设备已打开，无需重复的打开')
+        // console.log('调用keybox.readOutsideRfidData', window, this.readOutsideRfidCallback)
+        keybox.readOutsideRfidData(window, this.readOutsideRfidCallback)
+        sessionStorage.setItem('keyboxOpen', state)
+      } else if (state == 30) {
+        message('设备已关闭')
+        sessionStorage.removeItem('keyboxOpen')
+      } else if (state == -10){
+        message('设备打开失败，失败信息：'+data+'')
+        sessionStorage.removeItem('keyboxOpen')        
+      } else if (state == -30){
+        message('设备已关闭，不能重复关闭')
+        sessionStorage.removeItem('keyboxOpen')        
+      } else if (state == -100){
+        message('设备已崩溃，不能正常使用')
+        sessionStorage.removeItem('keyboxOpen')        
+      } else {
+        message('设备出现异常，错误码：'+state+', 错误信息：'+data+'')
+        sessionStorage.removeItem('keyboxOpen')        
       }
     }
   },
