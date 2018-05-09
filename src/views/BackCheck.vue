@@ -35,50 +35,9 @@
     </div>
   </div>
 </template>
-<style scoped>
-   .ScrollText{
-     position: relative;
-     width: 740px;
-     height: 500px;
-     overflow: hidden;
-     /*box-shadow:0 0 30px 10px rgba(255,255,255,.7) inset;*/
-     left: 620px;
-     top: 300px;
-     border-radius: 100px
-   }
-   .ScrollText_main{
-     position: absolute;
-     width:1400px;
-     height: 498px;
-     left: -1400px;
-     top: 0px;
-     color: white;
-     animation: 8s rowup linear infinite normal; 
-   }
-
-   @keyframes rowup {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(1400px);
-    }
-}
-.zhezao{
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background: url(../assets/verify/zez.png);
-  background-size: cover;
-}
-.mask_base{
-  background-color: rgba(0,0,0,0) !important;
-}
-</style>
 
 <script>
+import bus from '../modules/bus'
 import { circlePoint, keyframes } from '../modules/circlePoint'
 import ErrorMask from '../components/ErrorMask'
 let msgArr = [
@@ -92,12 +51,17 @@ export default {
   data () {
     return {
       showMask: false,
-      msgIndex: 2,
+      msgIndex: -1,
       timedown: 30,
       timer: null
     }
   },
   created () {
+    bus.$on('checkError', (state) => {
+      this.msgIndex++
+      this.showMask = true
+    })
+
     this.timer = setInterval(() => {
       this.timedown--
       if (this.timedown === 0) {
@@ -144,6 +108,49 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+   .ScrollText{
+     position: relative;
+     width: 740px;
+     height: 500px;
+     overflow: hidden;
+     /*box-shadow:0 0 30px 10px rgba(255,255,255,.7) inset;*/
+     left: 620px;
+     top: 300px;
+     border-radius: 100px
+   }
+   .ScrollText_main{
+     position: absolute;
+     width:1400px;
+     height: 498px;
+     left: -1400px;
+     top: 0px;
+     color: white;
+     animation: 8s rowup linear infinite normal; 
+   }
+
+   @keyframes rowup {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(1400px);
+    }
+}
+.zhezao{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: url(../assets/verify/zez.png);
+  background-size: cover;
+}
+.mask_base{
+  background-color: rgba(0,0,0,0) !important;
+}
+</style>
 
 <style scoped >
 .mask_base {
