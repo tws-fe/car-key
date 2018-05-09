@@ -379,6 +379,7 @@ export default {
   },
   created () { 
     if (process.env.VUE_APP_API === 'real') {
+      console.log('调用keybox.readOutsideRfidData, 参数：null,null' )
       keybox.readOutsideRfidData(null, null)
     }
     this.getLists()

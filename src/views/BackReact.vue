@@ -167,10 +167,10 @@ export default {
     },
     preReturnHandler () {
       //归还钥匙的预处理，此指令会让转盘把指定的盒柜转到出口位置
-      console.log('调用keybox.readOutsideRfidData, 参数：null,null' )
       // 模拟调试时屏蔽，上线时需要打开，用env变量来判断处理
       if (process.env.VUE_APP_API === 'real') {
         this.keyByChipsLoading = false
+        console.log('调用keybox.readOutsideRfidData, 参数：null,null' )
         // 调用preReturn方法需要把readOutsideRfidData方法关闭
         keybox.readOutsideRfidData(null, null)
       }
